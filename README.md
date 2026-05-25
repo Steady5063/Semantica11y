@@ -1,4 +1,4 @@
-![Semantica11y logo](./Semantically-logo.png)
+<img src="./Semantically-logo.png" alt="Semantica11y logo" width="500" height="350">
 
 # Semantica11y
 
