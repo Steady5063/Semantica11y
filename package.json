@@ -1,0 +1,33 @@
+{
+  "name": "semantica11y",
+  "version": "1.0.0",
+  "description": "A JavaScript engine to check webpages for ARIA and non-semantic HTML elements with suggestions for improvements",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./analyzer": "./src/analyzer.js",
+    "./rules": "./src/rules/index.js"
+  },
+  "scripts": {
+    "test": "node --test test/**/*.test.js",
+    "test:watch": "node --test test/**/*.test.js --watch",
+    "lint": "echo 'Add eslint configuration'",
+    "example": "node examples/basic.js"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "ARIA",
+    "semantic",
+    "HTML",
+    "web-standards",
+    "analyzer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "jsdom": "^24.0.0"
+  },
+  "devDependencies": {}
+}
