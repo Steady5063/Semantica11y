@@ -1,3 +1,5 @@
+![Semantica11y logo](./Semantically-logo.png)
+
 # Semantica11y
 
 A JavaScript analysis engine for checking webpages (HTML) for ARIA compliance and non-semantic HTML elements with intelligent suggestions for semantic improvements.
