@@ -5,5 +5,5 @@
  */
 
 export { Analyzer } from './analyzer.js';
-export { RuleEngine } from './rules/index.js';
-export { DEFAULT_RULES, CUSTOM_RULES } from './rules/definitions.js';
+export { RuleEngine } from './engine/index.js';
+export { DEFAULT_RULES, CUSTOM_RULES } from './engine/definitions.js';

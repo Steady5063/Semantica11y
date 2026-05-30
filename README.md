@@ -39,7 +39,7 @@ const analyzer = new Analyzer();
 const html = `
   <html>
     <body>
-      <div id="header">Header</div>
+      <div role="banner">Header</div>
       <img src="logo.png" />
       <form>
         <input type="text" id="name" />
@@ -91,11 +91,11 @@ console.log(results);
   },
   issues: [
     {
-      severity: 'error',
-      rule: 'missing-alt-text',
-      element: '<img src="logo.png" />',
-      message: 'Image missing alt text',
-      suggestion: 'Add descriptive alt text: alt="description of image"'
+      severity: 'warning',
+      rule: 'aria-landmarks',
+      element: '<div role="navigation">',
+      message: 'Element appears to be used for navigation',
+      suggestion: 'Consider using <nav> semantic element instead'
     },
     // ... more issues
   ]
@@ -125,35 +125,35 @@ const analyzer = new Analyzer({ rules: customRules });
 
 ## 📋 Default Rules
 
-### 1. **non-semantic-divs**
-Detects divs used for structural purposes (header, footer, nav) that should use semantic elements.
+### 1. **aria-landmarks**
+Detects elements using ARIA landmark roles that should use semantic elements.
 - Severity: Warning
-- Suggestion: Use `<header>`, `<footer>`, `<nav>`, `<main>`, `<article>`, `<section>`
+- Suggestion: Use `<header>`, `<footer>`, `<nav>`, `<main>`, `<aside>`, `<article>`, `<section>`
 
-### 2. **missing-alt-text**
-Detects images without alt text.
-- Severity: Error
-- Suggestion: Add descriptive alt attribute
-
-### 3. **missing-form-labels**
+### 2. **missing-form-labels**
 Detects form inputs without proper labels.
 - Severity: Error
 - Suggestion: Associate label with input using `for` attribute or ARIA
 
-### 4. **heading-hierarchy**
+### 3. **heading-hierarchy**
 Validates heading structure (H1 → H2 → H3, etc.).
 - Severity: Warning
 - Suggestion: Fix skipped heading levels
 
-### 5. **aria-buttons**
-Detects elements using `role="button"` that should use semantic buttons.
+### 4. **aria-actions**
+Detects elements using ARIA action roles that should use semantic elements.
 - Severity: Warning
-- Suggestion: Use `<button>`
+- Suggestion: Use semantic controls such as `<button>`, `<input type="checkbox">`, `<a>`, `<input>`, or `<textarea>`
 
-### 6. **missing-main-landmark**
-Checks for main content landmark.
+### 5. **missing-key-landmark**
+Checks for main, navigation, and footer landmarks, whether built with semantic elements or ARIA roles.
 - Severity: Suggestion
-- Suggestion: Add `<main>` or `role="main"`
+- Suggestion: Add missing landmarks such as `<main>`, `<nav>`, `<footer>`, or matching ARIA roles
+
+### 6. **aria-structure**
+Detects elements using ARIA structure roles that should use semantic elements.
+- Severity: Warning
+- Suggestion: Use semantic structure such as `<h1>` through `<h6>`, `<ul>`, `<ol>`, or `<li>`
 
 ## 🧪 Testing
 
@@ -182,9 +182,12 @@ semantica11y/
 ├── src/
 │   ├── index.js           # Main export
 │   ├── analyzer.js        # Core analyzer class
-│   └── rules/
+│   └── engine/
 │       ├── index.js       # RuleEngine class
-│       └── definitions.js # Default rule definitions
+│       ├── definitions.js # Default rule registry
+│       ├── rules/         # Individual rule definitions
+│       ├── semantic-role-mappings.js
+│       └── utils.js
 ├── examples/
 │   └── basic.js          # Usage example
 ├── test/

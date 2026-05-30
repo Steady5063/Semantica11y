@@ -3,7 +3,7 @@
  */
 
 import { JSDOM } from 'jsdom';
-import { RuleEngine } from './rules/index.js';
+import { RuleEngine } from './engine/index.js';
 
 export class Analyzer {
   /**

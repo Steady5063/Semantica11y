@@ -19,10 +19,11 @@ We love your input! We want to make contributing to this project as easy and tra
 
 To add a new analysis rule:
 
-1. Create a rule definition in [src/rules/definitions.js](src/rules/definitions.js)
-2. Add tests for the new rule in [test/rules.test.js](test/rules.test.js)
-3. Update the README with the new rule description
-4. Submit a PR with your changes
+1. Create a rule file in [src/engine/rules](src/engine/rules)
+2. Add the rule to [src/engine/definitions.js](src/engine/definitions.js)
+3. Add tests for the new rule in [test/rules.test.js](test/rules.test.js) or [test/analyzer.test.js](test/analyzer.test.js)
+4. Update the README with the new rule description
+5. Submit a PR with your changes
 
 ### Rule Structure
 

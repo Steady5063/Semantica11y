@@ -13,15 +13,15 @@ The main entry point for users. Responsibilities:
 - Formats and returns results
 - Provides convenient formatting methods
 
-### 2. RuleEngine (`src/rules/index.js`)
+### 2. RuleEngine (`src/engine/index.js`)
 Orchestrates rule execution. Responsibilities:
 - Manages collection of analysis rules
 - Executes rules against DOM documents
 - Aggregates results with summary statistics
 - Allows adding custom rules
 
-### 3. Rules (`src/rules/definitions.js`)
-Collection of analysis checks. Each rule:
+### 3. Rules (`src/engine/rules`)
+Collection of analysis checks, registered in `src/engine/definitions.js`. Each rule:
 - Defines an analysis pattern (non-semantic divs, missing labels, etc.)
 - Takes a DOM document and returns issues found
 - Includes severity level and suggestions
@@ -105,11 +105,11 @@ Return Results Object
 
 Example:
 ```javascript
-test('Analyzer - Detect missing alt text', async () => {
+test('Analyzer - Detect ARIA landmarks', async () => {
   const analyzer = new Analyzer();
-  const html = '<img src="test.png" />';
+  const html = '<div role="navigation">Menu</div>';
   const results = await analyzer.analyzeHTML(html);
-  const issues = results.issues.filter(i => i.rule === 'missing-alt-text');
+  const issues = results.issues.filter(i => i.rule === 'aria-landmarks');
   assert.ok(issues.length > 0);
 });
 ```

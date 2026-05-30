@@ -4,7 +4,7 @@
 
 import test from 'node:test';
 import assert from 'node:assert';
-import { RuleEngine } from '../src/rules/index.js';
+import { RuleEngine } from '../src/engine/index.js';
 
 test('RuleEngine - Initialization', () => {
   const engine = new RuleEngine();
@@ -19,9 +19,9 @@ test('RuleEngine - Get active rules', () => {
 
 test('RuleEngine - Get rule by ID', () => {
   const engine = new RuleEngine();
-  const rule = engine.getRule('missing-alt-text');
+  const rule = engine.getRule('missing-key-landmark');
   assert.ok(rule, 'Should find rule by ID');
-  assert.equal(rule.id, 'missing-alt-text');
+  assert.equal(rule.id, 'missing-key-landmark');
 });
 
 test('RuleEngine - Add custom rule', () => {

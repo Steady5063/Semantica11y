@@ -12,29 +12,27 @@ test('Analyzer - Basic instantiation', () => {
   assert.ok(analyzer.ruleEngine, 'RuleEngine should be initialized');
 });
 
-test('Analyzer - Detect missing alt text', async () => {
+test('Analyzer - Detect ARIA landmarks', async () => {
   const analyzer = new Analyzer();
-  const html = '<html><body><img src="test.png" /></body></html>';
+  const html = '<html><body><div role="banner">Header</div></body></html>';
 
   const results = await analyzer.analyzeHTML(html);
-  const altTextIssues = results.issues.filter(
-    (i) => i.rule === 'missing-alt-text'
-  );
+  const divIssues = results.issues.filter((i) => i.rule === 'aria-landmarks');
 
-  assert.ok(altTextIssues.length > 0, 'Should find missing alt text');
+  assert.ok(divIssues.length > 0, 'Should find elements with ARIA landmark roles');
 });
 
-test('Analyzer - Detect non-semantic divs', async () => {
+test('Analyzer - Ignores elements without ARIA landmark roles', async () => {
   const analyzer = new Analyzer();
   const html = '<html><body><div id="header">Header</div></body></html>';
 
   const results = await analyzer.analyzeHTML(html);
-  const divIssues = results.issues.filter((i) => i.rule === 'non-semantic-divs');
+  const divIssues = results.issues.filter((i) => i.rule === 'aria-landmarks');
 
-  assert.ok(divIssues.length > 0, 'Should find non-semantic divs');
+  assert.equal(divIssues.length, 0, 'Should ignore id and class naming patterns');
 });
 
-test('Analyzer - Detect non-semantic divs with ARIA landmark roles', async () => {
+test('Analyzer - Detect ARIA landmark roles', async () => {
   const analyzer = new Analyzer();
   const html = `
     <html>
@@ -49,7 +47,7 @@ test('Analyzer - Detect non-semantic divs with ARIA landmark roles', async () =>
   `;
 
   const results = await analyzer.analyzeHTML(html);
-  const divIssues = results.issues.filter((i) => i.rule === 'non-semantic-divs');
+  const divIssues = results.issues.filter((i) => i.rule === 'aria-landmarks');
 
   assert.equal(divIssues.length, 5, 'Should find divs using semantic ARIA roles');
   assert.ok(
@@ -59,6 +57,50 @@ test('Analyzer - Detect non-semantic divs with ARIA landmark roles', async () =>
   assert.ok(
     divIssues.some((issue) => issue.suggestion.includes('<nav>')),
     'Should suggest nav for navigation role'
+  );
+});
+
+test('Analyzer - Detect missing key landmarks', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><p>Content</p></body></html>';
+
+  const results = await analyzer.analyzeHTML(html);
+  const landmarkIssues = results.issues.filter(
+    (i) => i.rule === 'missing-key-landmark'
+  );
+
+  assert.equal(landmarkIssues.length, 3, 'Should find missing main, nav, and footer landmarks');
+  assert.ok(
+    landmarkIssues.some((issue) => issue.suggestion.includes('role="navigation"')),
+    'Should suggest ARIA navigation as an option'
+  );
+  assert.ok(
+    landmarkIssues.some((issue) => issue.suggestion.includes('<main>')),
+    'Should suggest semantic main as an option'
+  );
+});
+
+test('Analyzer - Accept semantic and ARIA key landmarks', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div role="navigation">Nav</div>
+        <main>Main</main>
+        <footer>Footer</footer>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const landmarkIssues = results.issues.filter(
+    (i) => i.rule === 'missing-key-landmark'
+  );
+
+  assert.equal(
+    landmarkIssues.length,
+    0,
+    'Should accept main, nav, and footer from semantic elements or ARIA roles'
   );
 });
 
@@ -85,18 +127,108 @@ test('Analyzer - Detect heading hierarchy issues', async () => {
   assert.ok(headingIssues.length > 0, 'Should find heading hierarchy issues');
 });
 
-test('Analyzer - Detect ARIA buttons', async () => {
+test('Analyzer - Detect ARIA actions', async () => {
   const analyzer = new Analyzer();
-  const html = '<html><body><div role="button">Save</div></body></html>';
+  const html = `
+    <html>
+      <body>
+        <div role="button">Save</div>
+        <div role="checkbox" aria-checked="false">Subscribe</div>
+        <span role="link">Read more</span>
+        <div role="textbox" contenteditable="true">Name</div>
+      </body>
+    </html>
+  `;
 
   const results = await analyzer.analyzeHTML(html);
-  const buttonIssues = results.issues.filter((i) => i.rule === 'aria-buttons');
+  const actionIssues = results.issues.filter((i) => i.rule === 'aria-actions');
 
-  assert.equal(buttonIssues.length, 1, 'Should find ARIA button usage');
-  assert.equal(
-    buttonIssues[0].suggestion,
-    'Consider using a <button> semantic element instead'
+  assert.equal(actionIssues.length, 4, 'Should find ARIA action roles');
+  assert.ok(
+    actionIssues.some((issue) => issue.suggestion.includes('<button>')),
+    'Should suggest button for button role'
   );
+  assert.ok(
+    actionIssues.some((issue) => issue.suggestion.includes('<input type="checkbox">')),
+    'Should suggest checkbox input for checkbox role'
+  );
+  assert.ok(
+    actionIssues.some((issue) => issue.suggestion.includes('<a>')),
+    'Should suggest anchor for link role'
+  );
+  assert.ok(
+    actionIssues.some((issue) => issue.suggestion.includes('<input> or <textarea>')),
+    'Should suggest input or textarea for textbox role'
+  );
+});
+
+test('Analyzer - Ignores semantic ARIA action elements', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <button role="button">Save</button>
+        <input type="checkbox" role="checkbox" />
+        <a href="/more" role="link">Read more</a>
+        <textarea role="textbox"></textarea>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const actionIssues = results.issues.filter((i) => i.rule === 'aria-actions');
+
+  assert.equal(actionIssues.length, 0, 'Should ignore semantic action elements');
+});
+
+test('Analyzer - Detect ARIA structure', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div role="heading" aria-level="2">Title</div>
+        <div role="list">
+          <div role="listitem">One</div>
+        </div>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
+
+  assert.equal(structureIssues.length, 3, 'Should find ARIA structure roles');
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<h1> through <h6>')),
+    'Should suggest heading elements for heading role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<ul> or <ol>')),
+    'Should suggest list elements for list role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<li>')),
+    'Should suggest li for listitem role'
+  );
+});
+
+test('Analyzer - Ignores semantic ARIA structure elements', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <h2 role="heading">Title</h2>
+        <ul role="list">
+          <li role="listitem">One</li>
+        </ul>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
+
+  assert.equal(structureIssues.length, 0, 'Should ignore semantic structure elements');
 });
 
 test('Analyzer - Format results', async () => {
