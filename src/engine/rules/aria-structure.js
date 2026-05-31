@@ -16,6 +16,26 @@ const ARIA_STRUCTURE_ROLE_MAPPINGS = [
     semanticElement: '<li>',
     isSemanticMatch: (element) => element.tagName.toLowerCase() === 'li',
   },
+  {
+    role: 'table',
+    semanticElement: '<table>',
+    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'table',
+  },
+  {
+    role: 'img',
+    semanticElement: '<img>',
+    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'img',
+  },
+  {
+    role: 'paragraph',
+    semanticElement: '<p>',
+    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'p',
+  },
+  {
+    role: 'generic',
+    semanticElement: 'a more specific semantic element or remove role="generic"',
+    isSemanticMatch: () => false,
+  },
 ];
 
 export const ariaStructureRule = {

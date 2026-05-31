@@ -6,38 +6,27 @@ import { Analyzer } from '../src/index.js';
 
 // Sample HTML with various accessibility issues
 const sampleHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Sample Page</title>
-</head>
-<body>
-    <div id="header">
-        <div class="navbar">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-        </div>
+<div class="listing">  
+   <div class="imageContainer" tabindex="0">
+    <img alt="" class="stockImage" src={this.props.imageSrc}/>
+   </div>
+   <div class="details">
+   <span role="heading" aria-level="4">{this.props.pd}</span>
+      <section class="list" role="list">
+        <span class="dot"></span>
+        <div class="li" role="listitem">
+          {this.props.descOne} </div>
+        <span class="dot"></span>
+        <div class="li" role="listitem"> 
+          {this.props.descTwo}</div>
+        <span class="dot"></span>
+        <div class="li" role="listitem">
+          {this.props.descThree}</div>
+      </section>
+      <div role="button" tabindex="0" class="btn" 
+           onClick={this.addCart}></div>
     </div>
-
-    <div id="main-content">
-        <h1>Welcome</h1>
-        <h3>Why This Product</h3>
-        
-        <img src="logo.png" />
-        
-        <form>
-            <input type="text" id="username" name="username" />
-            <input type="password" id="password" name="password" />
-            <button>Login</button>
-        </form>
-    </div>
-
-    <div id="footer">
-        <p>&copy; 2024 My Company</p>
-    </div>
-</body>
-</html>
+</div>
 `;
 
 async function runExample() {

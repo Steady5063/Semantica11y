@@ -69,7 +69,7 @@ test('Analyzer - Detect missing key landmarks', async () => {
     (i) => i.rule === 'missing-key-landmark'
   );
 
-  assert.equal(landmarkIssues.length, 3, 'Should find missing main, nav, and footer landmarks');
+  assert.equal(landmarkIssues.length, 4, 'Should find missing main, nav, footer, and heading');
   assert.ok(
     landmarkIssues.some((issue) => issue.suggestion.includes('role="navigation"')),
     'Should suggest ARIA navigation as an option'
@@ -78,13 +78,18 @@ test('Analyzer - Detect missing key landmarks', async () => {
     landmarkIssues.some((issue) => issue.suggestion.includes('<main>')),
     'Should suggest semantic main as an option'
   );
+  assert.ok(
+    landmarkIssues.some((issue) => issue.suggestion.includes('role="heading"')),
+    'Should suggest ARIA heading as an option'
+  );
 });
 
-test('Analyzer - Accept semantic and ARIA key landmarks', async () => {
+test('Analyzer - Accept semantic key landmarks and heading', async () => {
   const analyzer = new Analyzer();
   const html = `
     <html>
       <body>
+        <h1>Title</h1>
         <div role="navigation">Nav</div>
         <main>Main</main>
         <footer>Footer</footer>
@@ -100,8 +105,29 @@ test('Analyzer - Accept semantic and ARIA key landmarks', async () => {
   assert.equal(
     landmarkIssues.length,
     0,
-    'Should accept main, nav, and footer from semantic elements or ARIA roles'
+    'Should accept main, nav, footer, and heading from semantic elements or ARIA roles'
   );
+});
+
+test('Analyzer - Accept ARIA heading for missing key landmarks', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div role="heading" aria-level="1">Title</div>
+        <div role="navigation">Nav</div>
+        <main>Main</main>
+        <footer>Footer</footer>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const landmarkIssues = results.issues.filter(
+    (i) => i.rule === 'missing-key-landmark'
+  );
+
+  assert.equal(landmarkIssues.length, 0, 'Should accept role="heading" as a page heading');
 });
 
 test('Analyzer - Detect missing form labels', async () => {
@@ -190,6 +216,10 @@ test('Analyzer - Detect ARIA structure', async () => {
         <div role="list">
           <div role="listitem">One</div>
         </div>
+        <div role="table">Data</div>
+        <div role="img" aria-label="Chart"></div>
+        <div role="paragraph">Body copy</div>
+        <div role="generic">Generic wrapper</div>
       </body>
     </html>
   `;
@@ -197,7 +227,7 @@ test('Analyzer - Detect ARIA structure', async () => {
   const results = await analyzer.analyzeHTML(html);
   const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
 
-  assert.equal(structureIssues.length, 3, 'Should find ARIA structure roles');
+  assert.equal(structureIssues.length, 7, 'Should find ARIA structure roles');
   assert.ok(
     structureIssues.some((issue) => issue.suggestion.includes('<h1> through <h6>')),
     'Should suggest heading elements for heading role'
@@ -210,6 +240,22 @@ test('Analyzer - Detect ARIA structure', async () => {
     structureIssues.some((issue) => issue.suggestion.includes('<li>')),
     'Should suggest li for listitem role'
   );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<table>')),
+    'Should suggest table for table role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<img>')),
+    'Should suggest img for img role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<p>')),
+    'Should suggest p for paragraph role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('remove role="generic"')),
+    'Should suggest removing generic role'
+  );
 });
 
 test('Analyzer - Ignores semantic ARIA structure elements', async () => {
@@ -221,6 +267,9 @@ test('Analyzer - Ignores semantic ARIA structure elements', async () => {
         <ul role="list">
           <li role="listitem">One</li>
         </ul>
+        <table role="table"></table>
+        <img role="img" alt="Chart" />
+        <p role="paragraph">Body copy</p>
       </body>
     </html>
   `;
@@ -229,6 +278,46 @@ test('Analyzer - Ignores semantic ARIA structure elements', async () => {
   const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
 
   assert.equal(structureIssues.length, 0, 'Should ignore semantic structure elements');
+});
+
+test('Analyzer - Detect missing role action', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div tabindex="0">Save</div>
+        <span tabindex="0" role="heading">Title</span>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const roleIssues = results.issues.filter((i) => i.rule === 'missing-role-action');
+
+  assert.equal(roleIssues.length, 2, 'Should find focusable elements without action roles');
+  assert.ok(
+    roleIssues.every((issue) => issue.suggestion.includes('button')),
+    'Should suggest an action role'
+  );
+});
+
+test('Analyzer - Ignores focusable elements with action roles or native actions', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div tabindex="0" role="button">Save</div>
+        <span tabindex="0" role="link">Read more</span>
+        <button tabindex="0">Native button</button>
+        <a href="/more" tabindex="0">Native link</a>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const roleIssues = results.issues.filter((i) => i.rule === 'missing-role-action');
+
+  assert.equal(roleIssues.length, 0, 'Should ignore elements with action semantics');
 });
 
 test('Analyzer - Format results', async () => {

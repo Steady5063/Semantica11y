@@ -30,6 +30,20 @@ export const missingKeyLandmarkRule = {
         });
       });
 
+    const hasHeading = document.querySelector('h1, h2, h3, h4, h5, h6');
+    const hasHeadingRole = document.querySelector('[role~="heading"]');
+
+    if (!hasHeading && !hasHeadingRole) {
+      issues.push({
+        severity: 'suggestion',
+        rule: 'missing-key-landmark',
+        element: '<body>',
+        message: 'Page should have a heading',
+        suggestion: 'Add a heading element such as <h1> through <h6>',
+        line: 1,
+      });
+    }
+
     return issues;
   },
 };

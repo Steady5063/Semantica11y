@@ -146,14 +146,19 @@ Detects elements using ARIA action roles that should use semantic elements.
 - Suggestion: Use semantic controls such as `<button>`, `<input type="checkbox">`, `<a>`, `<input>`, or `<textarea>`
 
 ### 5. **missing-key-landmark**
-Checks for main, navigation, and footer landmarks, whether built with semantic elements or ARIA roles.
+Checks for main, navigation, footer, and page heading structure, whether built with semantic elements or ARIA roles.
 - Severity: Suggestion
-- Suggestion: Add missing landmarks such as `<main>`, `<nav>`, `<footer>`, or matching ARIA roles
+- Suggestion: Add missing structure such as `<main>`, `<nav>`, `<footer>`, a heading, or matching ARIA roles
 
 ### 6. **aria-structure**
 Detects elements using ARIA structure roles that should use semantic elements.
 - Severity: Warning
-- Suggestion: Use semantic structure such as `<h1>` through `<h6>`, `<ul>`, `<ol>`, or `<li>`
+- Suggestion: Use semantic structure such as `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<img>`, or `<p>`
+
+### 7. **missing-role-action**
+Detects elements with `tabindex="0"` that do not have an action role.
+- Severity: Warning
+- Suggestion: Add an appropriate role such as `button`, `checkbox`, `link`, or `textbox`
 
 ## 🧪 Testing
 
