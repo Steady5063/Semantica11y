@@ -8,7 +8,8 @@
     ".": "./src/index.js",
     "./analyzer": "./src/analyzer.js",
     "./rules": "./src/engine/index.js",
-    "./engine": "./src/engine/index.js"
+    "./engine": "./src/engine/index.js",
+    "./overview": "./src/engine/overview/index.js"
   },
   "scripts": {
     "test": "node --test test/**/*.test.js",

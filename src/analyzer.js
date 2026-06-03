@@ -4,6 +4,7 @@
 
 import { JSDOM } from 'jsdom';
 import { RuleEngine } from './engine/index.js';
+import { createSemanticOverview, formatSemanticOverview } from './engine/overview/index.js';
 
 export class Analyzer {
   /**
@@ -42,7 +43,10 @@ export class Analyzer {
           suggestions: 0,
         },
         issues: [],
+        overview: null,
       };
+
+      this.results.overview = createSemanticOverview(document);
 
       // Analyze the document with all rules
       await this.ruleEngine.analyze(document, this.results);
@@ -89,6 +93,11 @@ export class Analyzer {
     output += `  • Warnings: ${results.summary.warnings}\n`;
     output += `  • Suggestions: ${results.summary.suggestions}\n`;
     output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+    if (results.overview) {
+      output += `\n${formatSemanticOverview(results.overview)}\n`;
+      output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    }
 
     if (results.issues.length > 0) {
       output += `\n🔍 Issues Found:\n`;

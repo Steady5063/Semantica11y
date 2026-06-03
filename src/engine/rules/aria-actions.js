@@ -30,6 +30,40 @@ const ARIA_ACTION_ROLE_MAPPINGS = [
   },
 ];
 
+function getNativeActionRole(element) {
+  const tagName = element.tagName.toLowerCase();
+
+  if (tagName === 'button') {
+    return 'button';
+  }
+
+  if (tagName === 'a' && element.hasAttribute('href')) {
+    return 'link';
+  }
+
+  if (tagName === 'textarea') {
+    return 'textbox';
+  }
+
+  if (tagName === 'input') {
+    const type = element.getAttribute('type')?.toLowerCase() || 'text';
+
+    if (type === 'checkbox') {
+      return 'checkbox';
+    }
+
+    if (['button', 'reset', 'submit'].includes(type)) {
+      return 'button';
+    }
+
+    if (!['hidden', 'radio'].includes(type)) {
+      return 'textbox';
+    }
+  }
+
+  return null;
+}
+
 export const ariaActionsRule = {
   id: 'aria-actions',
   name: 'ARIA action usage',
@@ -45,17 +79,26 @@ export const ariaActionsRule = {
         .split(/\s+/)
         .filter(Boolean);
 
+      const nativeActionRole = getNativeActionRole(element);
+
       ARIA_ACTION_ROLE_MAPPINGS.forEach(({ role, semanticElement, isSemanticMatch }) => {
         if (!roles.includes(role) || isSemanticMatch(element)) {
           return;
         }
 
+        const hasMismatchedNativeRole =
+          nativeActionRole && nativeActionRole !== role;
+
         issues.push({
           severity: 'warning',
           rule: 'aria-actions',
           element: getElementSignature(element),
-          message: `Element uses ARIA ${role} role instead of a semantic element`,
-          suggestion: `Consider using ${semanticElement} semantic element instead`,
+          message: hasMismatchedNativeRole
+            ? `Native ${nativeActionRole} element has mismatched ARIA ${role} role`
+            : `Element uses ARIA ${role} role instead of a semantic element`,
+          suggestion: hasMismatchedNativeRole
+            ? `Remove role="${role}" or use ${semanticElement} if the element should behave as ${role}`
+            : `Consider using ${semanticElement} semantic element instead`,
           line: getLineNumber(element),
         });
       });

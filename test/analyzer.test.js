@@ -4,12 +4,49 @@
 
 import test from 'node:test';
 import assert from 'node:assert';
-import { Analyzer } from '../src/index.js';
+import { Analyzer, formatSemanticOverview } from '../src/index.js';
 
 test('Analyzer - Basic instantiation', () => {
   const analyzer = new Analyzer();
   assert.ok(analyzer, 'Analyzer should be created');
   assert.ok(analyzer.ruleEngine, 'RuleEngine should be initialized');
+});
+
+test('Analyzer - Creates semantic overview', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <header>Header</header>
+        <main>
+          <h1>Title</h1>
+          <p>Body</p>
+          <div role="navigation">Custom nav</div>
+          <div role="button" tabindex="0">Custom action</div>
+        </main>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+
+  assert.equal(results.overview.nativeSemanticElements, 4);
+  assert.equal(results.overview.customSemanticElements, 2);
+  assert.equal(results.overview.totalSemanticCandidates, 6);
+  assert.equal(results.overview.grade, 'C');
+});
+
+test('Analyzer - Formats semantic overview', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><main><h1>Title</h1></main></body></html>';
+
+  const results = await analyzer.analyzeHTML(html);
+  const overviewReport = formatSemanticOverview(results.overview);
+  const formattedResults = analyzer.formatResults(results);
+
+  assert.ok(overviewReport.includes('Native semantic elements: 2'));
+  assert.ok(overviewReport.includes('Grade: A'));
+  assert.ok(formattedResults.includes('Semantica11y Semantic Overview'));
 });
 
 test('Analyzer - Detect ARIA landmarks', async () => {
@@ -71,16 +108,16 @@ test('Analyzer - Detect missing key landmarks', async () => {
 
   assert.equal(landmarkIssues.length, 4, 'Should find missing main, nav, footer, and heading');
   assert.ok(
-    landmarkIssues.some((issue) => issue.suggestion.includes('role="navigation"')),
-    'Should suggest ARIA navigation as an option'
+    landmarkIssues.some((issue) => issue.suggestion.includes('<nav>')),
+    'Should suggest semantic navigation as an option'
   );
   assert.ok(
     landmarkIssues.some((issue) => issue.suggestion.includes('<main>')),
     'Should suggest semantic main as an option'
   );
   assert.ok(
-    landmarkIssues.some((issue) => issue.suggestion.includes('role="heading"')),
-    'Should suggest ARIA heading as an option'
+    landmarkIssues.some((issue) => issue.suggestion.includes('<h1> through <h6>')),
+    'Should suggest semantic heading as an option'
   );
 });
 
@@ -207,6 +244,34 @@ test('Analyzer - Ignores semantic ARIA action elements', async () => {
   assert.equal(actionIssues.length, 0, 'Should ignore semantic action elements');
 });
 
+test('Analyzer - Detect ARIA action role overrides on native elements', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <a href="/submit" role="button">Submit</a>
+        <button role="link">Read more</button>
+        <input type="checkbox" role="button" />
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const actionIssues = results.issues.filter((i) => i.rule === 'aria-actions');
+
+  assert.equal(actionIssues.length, 3, 'Should find mismatched native and ARIA action roles');
+  assert.ok(
+    actionIssues.some((issue) =>
+      issue.message.includes('Native link element has mismatched ARIA button role')
+    ),
+    'Should call out link overridden as button'
+  );
+  assert.ok(
+    actionIssues.every((issue) => issue.suggestion.includes('Remove role=')),
+    'Should suggest removing the mismatched role'
+  );
+});
+
 test('Analyzer - Detect ARIA structure', async () => {
   const analyzer = new Analyzer();
   const html = `
@@ -318,6 +383,80 @@ test('Analyzer - Ignores focusable elements with action roles or native actions'
   const roleIssues = results.issues.filter((i) => i.rule === 'missing-role-action');
 
   assert.equal(roleIssues.length, 0, 'Should ignore elements with action semantics');
+});
+
+test('Analyzer - Detect native label duplicate and conflict', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <button aria-label="Submit">Submit</button>
+        <a href="/submit" aria-label="This is a button">Submit</a>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
+
+  assert.equal(labelIssues.length, 2, 'Should find duplicate and conflicting aria-labels');
+  assert.ok(
+    labelIssues.some(
+      (issue) =>
+        issue.severity === 'warning' &&
+        issue.message === 'Unnecessary aria-label duplicates native label text'
+    ),
+    'Should warn when aria-label duplicates native text'
+  );
+  assert.ok(
+    labelIssues.some(
+      (issue) =>
+        issue.severity === 'error' &&
+        issue.message === 'aria-label does not match native label text'
+    ),
+    'Should error when aria-label conflicts with native text'
+  );
+});
+
+test('Analyzer - Detect native label conflicts on form controls', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <label for="email">Email</label>
+        <input id="email" type="text" aria-label="Email" />
+        <label>
+          Subscribe
+          <input type="checkbox" aria-label="Newsletter signup" />
+        </label>
+        <input type="submit" value="Search" aria-label="Search form" />
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
+
+  assert.equal(labelIssues.length, 3, 'Should compare aria-label to native form labels');
+  assert.equal(labelIssues.filter((issue) => issue.severity === 'warning').length, 1);
+  assert.equal(labelIssues.filter((issue) => issue.severity === 'error').length, 2);
+});
+
+test('Analyzer - Allows aria-label when no native label exists', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <button aria-label="Close"></button>
+        <input type="text" aria-label="Search" />
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
+
+  assert.equal(labelIssues.length, 0, 'Should allow aria-label when there is no native label');
 });
 
 test('Analyzer - Format results', async () => {

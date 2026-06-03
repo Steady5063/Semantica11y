@@ -8,6 +8,7 @@ import { headingHierarchyRule } from './rules/heading-hierarchy.js';
 import { missingFormLabelsRule } from './rules/missing-form-labels.js';
 import { missingKeyLandmarkRule } from './rules/missing-key-landmark.js';
 import { missingRoleActionRule } from './rules/missing-role-action.js';
+import { nativeLabelRule } from './rules/native-label.js';
 import { ariaLandmarksRule } from './rules/aria-landmarks.js';
 
 /**
@@ -20,6 +21,7 @@ export const DEFAULT_RULES = [
   ariaActionsRule,
   ariaStructureRule,
   missingRoleActionRule,
+  nativeLabelRule,
   missingKeyLandmarkRule,
 ];
 

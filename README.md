@@ -89,6 +89,13 @@ console.log(results);
     warnings: 2,
     suggestions: 1
   },
+  overview: {
+    nativeSemanticElements: 12,
+    customSemanticElements: 3,
+    totalSemanticCandidates: 15,
+    semanticRatio: 0.8,
+    grade: 'B'
+  },
   issues: [
     {
       severity: 'warning',
@@ -101,6 +108,17 @@ console.log(results);
   ]
 }
 */
+```
+
+### Semantic Overview
+
+```javascript
+import { Analyzer, formatSemanticOverview } from 'semantica11y';
+
+const analyzer = new Analyzer();
+const results = await analyzer.analyzeHTML(html);
+
+console.log(formatSemanticOverview(results.overview));
 ```
 
 ### Custom Rules
@@ -141,7 +159,7 @@ Validates heading structure (H1 → H2 → H3, etc.).
 - Suggestion: Fix skipped heading levels
 
 ### 4. **aria-actions**
-Detects elements using ARIA action roles that should use semantic elements.
+Detects elements using ARIA action roles that should use semantic elements, including mismatched ARIA roles on native action elements.
 - Severity: Warning
 - Suggestion: Use semantic controls such as `<button>`, `<input type="checkbox">`, `<a>`, `<input>`, or `<textarea>`
 
@@ -159,6 +177,11 @@ Detects elements using ARIA structure roles that should use semantic elements.
 Detects elements with `tabindex="0"` that do not have an action role.
 - Severity: Warning
 - Suggestion: Add an appropriate role such as `button`, `checkbox`, `link`, or `textbox`
+
+### 8. **native-label**
+Detects native action elements with `aria-label` values that duplicate or conflict with native label text.
+- Severity: Warning for duplicate labels, Error for conflicting labels
+- Suggestion: Remove unnecessary `aria-label` values or make them match the visible/native label
 
 ## 🧪 Testing
 
@@ -190,6 +213,7 @@ semantica11y/
 │   └── engine/
 │       ├── index.js       # RuleEngine class
 │       ├── definitions.js # Default rule registry
+│       ├── overview/      # Semantic overview reporting
 │       ├── rules/         # Individual rule definitions
 │       ├── semantic-role-mappings.js
 │       └── utils.js
