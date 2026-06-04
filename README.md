@@ -191,9 +191,9 @@ Detects non-semantic action elements with `tabindex="0"` or click handlers that 
 - Suggestion: Use native controls such as `<button>` or `<a>`, or add an appropriate action role
 
 ### 8. **native-label**
-Detects native action elements with `aria-label` values that duplicate or conflict with native label text.
-- Severity: Warning for duplicate labels, Error for conflicting labels
-- Suggestion: Remove unnecessary `aria-label` values or make them match the visible/native label
+Detects native action elements with `aria-label` values that duplicate or completely differ from native label text.
+- Severity: Warning for duplicate labels, Error for unrelated labels
+- Suggestion: Remove unnecessary `aria-label` values or make sure they include the visible/native label text. Helper text such as "opens in a new window" or "opens in new window" is allowed.
 
 ## 🧪 Testing
 

@@ -1,9 +1,17 @@
 import { getElementSignature, getLineNumber } from '../utils.js';
 
 const INPUT_VALUE_LABEL_TYPES = ['button', 'reset', 'submit'];
+const ALLOWED_ARIA_LABEL_EXTENSIONS = [
+  'opens in a new window',
+  'opens in new window',
+];
 
 function normalizeText(value) {
-  return value.trim().replace(/\s+/g, ' ').toLowerCase();
+  return value
+    .trim()
+    .replace(/[()[\].,:;–—-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .toLowerCase();
 }
 
 function getLabelText(element, document) {
@@ -38,6 +46,26 @@ function getNativeText(element, document) {
   return '';
 }
 
+function hasAllowedExtension(ariaLabel, nativeText) {
+  const normalizedAriaLabel = normalizeText(ariaLabel);
+  const normalizedNativeText = normalizeText(nativeText);
+
+  return normalizedAriaLabel.includes(normalizedNativeText);
+}
+
+function hasApprovedHelperText(ariaLabel, nativeText) {
+  const normalizedAriaLabel = normalizeText(ariaLabel);
+  const normalizedNativeText = normalizeText(nativeText);
+
+  if (!normalizedAriaLabel.startsWith(`${normalizedNativeText} `)) {
+    return false;
+  }
+
+  const extension = normalizedAriaLabel.slice(normalizedNativeText.length).trim();
+
+  return ALLOWED_ARIA_LABEL_EXTENSIONS.includes(extension);
+}
+
 export const nativeLabelRule = {
   id: 'native-label',
   name: 'Native label conflicts',
@@ -57,6 +85,14 @@ export const nativeLabelRule = {
         }
 
         const isSameLabel = normalizeText(ariaLabel) === normalizeText(nativeText);
+
+        if (
+          !isSameLabel &&
+          (hasAllowedExtension(ariaLabel, nativeText) ||
+            hasApprovedHelperText(ariaLabel, nativeText))
+        ) {
+          return;
+        }
 
         issues.push({
           severity: isSameLabel ? 'warning' : 'error',

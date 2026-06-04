@@ -9,6 +9,13 @@ export const missingFormLabelsRule = {
     const issues = [];
 
     document.querySelectorAll('input, textarea, select').forEach((input) => {
+      if (
+        input.tagName.toLowerCase() === 'input' &&
+        input.getAttribute('type')?.toLowerCase() === 'hidden'
+      ) {
+        return;
+      }
+
       const id = input.id;
       const name = input.name;
       const ariaLabel = input.getAttribute('aria-label');

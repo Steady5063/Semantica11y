@@ -213,6 +213,17 @@ test('Analyzer - Detect missing form labels', async () => {
   assert.ok(labelIssues.length > 0, 'Should find missing form labels');
 });
 
+test('Analyzer - Ignore hidden inputs for missing form labels', async () => {
+  const analyzer = new Analyzer();
+  const html =
+    '<html><body><form><input type="hidden" id="token" name="token" /></form></body></html>';
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'missing-form-labels');
+
+  assert.equal(labelIssues.length, 0, 'Should ignore hidden inputs');
+});
+
 test('Analyzer - Detect heading hierarchy issues', async () => {
   const analyzer = new Analyzer();
   const html = '<html><body><h1>Title</h1><h3>Subtitle</h3></body></html>';
@@ -498,9 +509,9 @@ test('Analyzer - Detect native label conflicts on form controls', async () => {
   const results = await analyzer.analyzeHTML(html);
   const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
 
-  assert.equal(labelIssues.length, 3, 'Should compare aria-label to native form labels');
+  assert.equal(labelIssues.length, 2, 'Should compare aria-label to native form labels');
   assert.equal(labelIssues.filter((issue) => issue.severity === 'warning').length, 1);
-  assert.equal(labelIssues.filter((issue) => issue.severity === 'error').length, 2);
+  assert.equal(labelIssues.filter((issue) => issue.severity === 'error').length, 1);
 });
 
 test('Analyzer - Allows aria-label when no native label exists', async () => {
@@ -518,6 +529,45 @@ test('Analyzer - Allows aria-label when no native label exists', async () => {
   const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
 
   assert.equal(labelIssues.length, 0, 'Should allow aria-label when there is no native label');
+});
+
+test('Analyzer - Allows native label with approved descriptive extension', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <a href="/docs" aria-label="Docs opens in a new window">Docs</a>
+        <button aria-label="Help - opens in a new window">Help</button>
+        <a href="/pricing" aria-label="Pricing opens in new window">Pricing</a>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
+
+  assert.equal(
+    labelIssues.length,
+    0,
+    'Should allow aria-labels that add approved descriptive text'
+  );
+});
+
+test('Analyzer - Allows aria-label that contains native label text', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <button aria-label="Open settings menu">Settings</button>
+        <input type="submit" value="Search" aria-label="Search form" />
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'native-label');
+
+  assert.equal(labelIssues.length, 0, 'Should allow aria-labels that include native text');
 });
 
 test('Analyzer - Format results', async () => {
