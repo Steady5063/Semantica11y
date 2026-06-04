@@ -29,26 +29,46 @@ function isNativeActionElement(element) {
   return false;
 }
 
+function createIssue(element, message) {
+  return {
+    severity: 'warning',
+    rule: 'missing-role-action',
+    element: getElementSignature(element),
+    message,
+    suggestion: 'Use a native action element such as <button> or <a>, or add an appropriate action role',
+    line: getLineNumber(element),
+  };
+}
+
 export const missingRoleActionRule = {
   id: 'missing-role-action',
   name: 'Missing role on focusable action',
   enabled: true,
-  description: 'Detects elements with tabindex="0" that do not have an action role',
+  description: 'Detects non-semantic action elements that do not have an action role',
   check(document) {
     const issues = [];
+    const reportedElements = new Set();
 
     document.querySelectorAll('[tabindex="0"]').forEach((element) => {
       if (hasActionRole(element) || isNativeActionElement(element)) {
         return;
       }
 
+      issues.push(createIssue(element, 'Focusable element does not have an action role'));
+      reportedElements.add(element);
+    });
+
+    document.querySelectorAll('[onclick]').forEach((element) => {
+      if (
+        reportedElements.has(element) ||
+        hasActionRole(element) ||
+        isNativeActionElement(element)
+      ) {
+        return;
+      }
+
       issues.push({
-        severity: 'warning',
-        rule: 'missing-role-action',
-        element: getElementSignature(element),
-        message: 'Focusable element does not have an action role',
-        suggestion: 'Add an appropriate element (e.g., <button>, <link>) to ensure it is recognized as an interactive element.',
-        line: getLineNumber(element),
+        ...createIssue(element, 'Element has a click handler but does not have an action role'),
       });
     });
 

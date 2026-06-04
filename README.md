@@ -121,6 +121,18 @@ const results = await analyzer.analyzeHTML(html);
 console.log(formatSemanticOverview(results.overview));
 ```
 
+### Reports
+
+```javascript
+import { Analyzer, exportTextReport, formatConsoleReport } from 'semantica11y';
+
+const analyzer = new Analyzer();
+const results = await analyzer.analyzeHTML(html);
+
+console.log(formatConsoleReport(results));
+await exportTextReport(results, './semantica11y-report.txt');
+```
+
 ### Custom Rules
 
 ```javascript
@@ -174,9 +186,9 @@ Detects elements using ARIA structure roles that should use semantic elements.
 - Suggestion: Use semantic structure such as `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<img>`, or `<p>`
 
 ### 7. **missing-role-action**
-Detects elements with `tabindex="0"` that do not have an action role.
+Detects non-semantic action elements with `tabindex="0"` or click handlers that do not have an action role.
 - Severity: Warning
-- Suggestion: Add an appropriate role such as `button`, `checkbox`, `link`, or `textbox`
+- Suggestion: Use native controls such as `<button>` or `<a>`, or add an appropriate action role
 
 ### 8. **native-label**
 Detects native action elements with `aria-label` values that duplicate or conflict with native label text.
@@ -203,6 +215,20 @@ Run examples:
 npm run example
 ```
 
+## 📦 Build Package
+
+Create a clean package directory:
+
+```bash
+npm run build
+```
+
+Create a tarball from the build output:
+
+```bash
+npm pack ./dist
+```
+
 ## 🏗️ Project Structure
 
 ```
@@ -214,6 +240,7 @@ semantica11y/
 │       ├── index.js       # RuleEngine class
 │       ├── definitions.js # Default rule registry
 │       ├── overview/      # Semantic overview reporting
+│       ├── reporter/      # Report formatting and exporting
 │       ├── rules/         # Individual rule definitions
 │       ├── semantic-role-mappings.js
 │       └── utils.js

@@ -85,6 +85,10 @@ function getGrade(nativeCount, customCount) {
 
 function isCustomSemanticElement(element) {
   const roles = getRoles(element);
+  const hasNoRole = roles.length === 0;
+  const hasCustomBehavior =
+    element.getAttribute('tabindex') === '0' || element.hasAttribute('onclick');
+  const isNativeSemanticElement = element.matches(NATIVE_SEMANTIC_SELECTORS.join(','));
 
   if (
     roles.some((role) =>
@@ -96,16 +100,16 @@ function isCustomSemanticElement(element) {
     return true;
   }
 
-  return element.getAttribute('tabindex') === '0' && !element.matches(NATIVE_SEMANTIC_SELECTORS.join(','));
+  return hasNoRole && hasCustomBehavior && !isNativeSemanticElement;
 }
 
 export function createSemanticOverview(document) {
   const nativeElements = Array.from(
     document.querySelectorAll(NATIVE_SEMANTIC_SELECTORS.join(','))
   );
-  const customElements = Array.from(document.querySelectorAll('[role], [tabindex="0"]')).filter(
-    isCustomSemanticElement
-  );
+  const customElements = Array.from(
+    document.querySelectorAll('[role], [tabindex="0"], [onclick]')
+  ).filter(isCustomSemanticElement);
   const total = nativeElements.length + customElements.length;
   const semanticRatio = total > 0 ? nativeElements.length / total : null;
 
@@ -125,10 +129,10 @@ export function formatSemanticOverview(overview) {
       : `${Math.round(overview.semanticRatio * 100)}%`;
 
   return [
-    'Semantica11y Semantic Overview',
+    'Semantic Overview',
     '-------------------------------',
     `Native semantic elements: ${overview.nativeSemanticElements}`,
-    `ARIA/custom semantic components: ${overview.customSemanticElements}`,
+    `ARIA/custom non-semantic components: ${overview.customSemanticElements}`,
     `Native semantic ratio: ${ratio}`,
     `Grade: ${overview.grade}`,
   ].join('\n');

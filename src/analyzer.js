@@ -4,7 +4,8 @@
 
 import { JSDOM } from 'jsdom';
 import { RuleEngine } from './engine/index.js';
-import { createSemanticOverview, formatSemanticOverview } from './engine/overview/index.js';
+import { createSemanticOverview } from './engine/overview/index.js';
+import { formatConsoleReport } from './engine/reporter/index.js';
 
 export class Analyzer {
   /**
@@ -82,37 +83,6 @@ export class Analyzer {
    * @returns {string} Formatted output
    */
   formatResults(results = this.results) {
-    if (!results) return '';
-
-    let output = `\n📊 Semantica11y Analysis Report\n`;
-    output += `URL: ${results.url}\n`;
-    output += `Time: ${results.timestamp}\n`;
-    output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-    output += `Total Issues: ${results.summary.total}\n`;
-    output += `  • Errors: ${results.summary.errors}\n`;
-    output += `  • Warnings: ${results.summary.warnings}\n`;
-    output += `  • Suggestions: ${results.summary.suggestions}\n`;
-    output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-
-    if (results.overview) {
-      output += `\n${formatSemanticOverview(results.overview)}\n`;
-      output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-    }
-
-    if (results.issues.length > 0) {
-      output += `\n🔍 Issues Found:\n`;
-      results.issues.forEach((issue, index) => {
-        output += `\n${index + 1}. [${issue.severity.toUpperCase()}] ${issue.rule}\n`;
-        output += `   Element: ${issue.element}\n`;
-        output += `   Message: ${issue.message}\n`;
-        if (issue.suggestion) {
-          output += `   💡 Suggestion: ${issue.suggestion}\n`;
-        }
-      });
-    } else {
-      output += `\n✅ No issues found!\n`;
-    }
-
-    return output;
+    return formatConsoleReport(results);
   }
 }

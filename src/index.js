@@ -12,3 +12,8 @@ export {
   formatSemanticOverview,
   printSemanticOverview,
 } from './engine/overview/index.js';
+export {
+  exportTextReport,
+  formatConsoleReport,
+  printConsoleReport,
+} from './engine/reporter/index.js';

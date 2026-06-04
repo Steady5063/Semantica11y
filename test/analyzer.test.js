@@ -4,7 +4,15 @@
 
 import test from 'node:test';
 import assert from 'node:assert';
-import { Analyzer, formatSemanticOverview } from '../src/index.js';
+import { mkdtemp, readFile } from 'fs/promises';
+import os from 'os';
+import path from 'path';
+import {
+  Analyzer,
+  exportTextReport,
+  formatConsoleReport,
+  formatSemanticOverview,
+} from '../src/index.js';
 
 test('Analyzer - Basic instantiation', () => {
   const analyzer = new Analyzer();
@@ -23,6 +31,9 @@ test('Analyzer - Creates semantic overview', async () => {
           <p>Body</p>
           <div role="navigation">Custom nav</div>
           <div role="button" tabindex="0">Custom action</div>
+          <div tabindex="0">Focusable custom component</div>
+          <span onclick="openMenu()">Clickable custom component</span>
+          <button onclick="save()">Native action</button>
         </main>
       </body>
     </html>
@@ -30,10 +41,33 @@ test('Analyzer - Creates semantic overview', async () => {
 
   const results = await analyzer.analyzeHTML(html);
 
-  assert.equal(results.overview.nativeSemanticElements, 4);
-  assert.equal(results.overview.customSemanticElements, 2);
+  assert.equal(results.overview.nativeSemanticElements, 5);
+  assert.equal(results.overview.customSemanticElements, 4);
+  assert.equal(results.overview.totalSemanticCandidates, 9);
+  assert.equal(results.overview.grade, 'D');
+});
+
+test('Analyzer - Counts no-role focus and click elements in semantic overview', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <main>
+          <h1>Title</h1>
+          <div tabindex="0">Focusable custom component</div>
+          <span onclick="openMenu()">Clickable custom component</span>
+          <div tabindex="0" onclick="submit()">Focusable clickable custom component</div>
+          <button tabindex="0" onclick="save()">Native action</button>
+        </main>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+
+  assert.equal(results.overview.nativeSemanticElements, 3);
+  assert.equal(results.overview.customSemanticElements, 3);
   assert.equal(results.overview.totalSemanticCandidates, 6);
-  assert.equal(results.overview.grade, 'C');
 });
 
 test('Analyzer - Formats semantic overview', async () => {
@@ -46,7 +80,8 @@ test('Analyzer - Formats semantic overview', async () => {
 
   assert.ok(overviewReport.includes('Native semantic elements: 2'));
   assert.ok(overviewReport.includes('Grade: A'));
-  assert.ok(formattedResults.includes('Semantica11y Semantic Overview'));
+  assert.ok(formattedResults.includes('Semantic Overview'));
+  assert.ok(!formattedResults.includes('Semantica11y Semantic Overview'));
 });
 
 test('Analyzer - Detect ARIA landmarks', async () => {
@@ -366,6 +401,30 @@ test('Analyzer - Detect missing role action', async () => {
   );
 });
 
+test('Analyzer - Detect click handlers without action roles', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div onclick="save()">Save</div>
+        <span onclick="openMenu()">Menu</span>
+        <div tabindex="0" onclick="submit()">Submit</div>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const roleIssues = results.issues.filter((i) => i.rule === 'missing-role-action');
+
+  assert.equal(roleIssues.length, 3, 'Should find clickable non-semantic elements');
+  assert.ok(
+    roleIssues.some((issue) =>
+      issue.message.includes('click handler but does not have an action role')
+    ),
+    'Should identify click handler issues'
+  );
+});
+
 test('Analyzer - Ignores focusable elements with action roles or native actions', async () => {
   const analyzer = new Analyzer();
   const html = `
@@ -373,7 +432,9 @@ test('Analyzer - Ignores focusable elements with action roles or native actions'
       <body>
         <div tabindex="0" role="button">Save</div>
         <span tabindex="0" role="link">Read more</span>
+        <div onclick="save()" role="button">Save</div>
         <button tabindex="0">Native button</button>
+        <button onclick="save()">Native click button</button>
         <a href="/more" tabindex="0">Native link</a>
       </body>
     </html>
@@ -467,5 +528,35 @@ test('Analyzer - Format results', async () => {
   const formatted = analyzer.formatResults(results);
 
   assert.ok(formatted.includes('Semantica11y'), 'Should format as report');
-  assert.ok(formatted.includes('Issues Found'), 'Should show issues section');
+  assert.ok(formatted.includes('Total Findings'), 'Should show findings summary');
+  assert.ok(formatted.includes('Findings By Category'), 'Should show grouped findings section');
+  assert.ok(formatted.includes('Errors ('), 'Should show errors section');
+  assert.ok(formatted.includes('Warnings ('), 'Should show warnings section');
+  assert.ok(formatted.includes('Suggestions ('), 'Should show suggestions section');
+});
+
+test('Reporter - Export console report to text file', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><button aria-label="Submit">Submit</button></body></html>';
+  const results = await analyzer.analyzeHTML(html);
+  const directory = await mkdtemp(path.join(os.tmpdir(), 'semantica11y-report-'));
+  const reportPath = path.join(directory, 'report.txt');
+
+  const writtenPath = await exportTextReport(results, reportPath);
+  const report = await readFile(writtenPath, 'utf8');
+
+  assert.equal(writtenPath, reportPath);
+  assert.ok(report.includes('Semantica11y Analysis Report'));
+  assert.ok(report.includes('Errors ('));
+  assert.ok(report.includes('Warnings ('));
+  assert.ok(!/\x1b\[[0-9;]*m/.test(report), 'Text export should not include ANSI colors');
+});
+
+test('Reporter - Format console report with colors', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><button aria-label="Submit">Submit</button></body></html>';
+  const results = await analyzer.analyzeHTML(html);
+  const report = formatConsoleReport(results);
+
+  assert.ok(/\x1b\[[0-9;]*m/.test(report), 'Console report should include ANSI colors');
 });
