@@ -11,77 +11,12 @@ import {
   Analyzer,
   exportTextReport,
   formatConsoleReport,
-  formatSemanticOverview,
 } from '../src/index.js';
 
 test('Analyzer - Basic instantiation', () => {
   const analyzer = new Analyzer();
   assert.ok(analyzer, 'Analyzer should be created');
   assert.ok(analyzer.ruleEngine, 'RuleEngine should be initialized');
-});
-
-test('Analyzer - Creates semantic overview', async () => {
-  const analyzer = new Analyzer();
-  const html = `
-    <html>
-      <body>
-        <header>Header</header>
-        <main>
-          <h1>Title</h1>
-          <p>Body</p>
-          <div role="navigation">Custom nav</div>
-          <div role="button" tabindex="0">Custom action</div>
-          <div tabindex="0">Focusable custom component</div>
-          <span onclick="openMenu()">Clickable custom component</span>
-          <button onclick="save()">Native action</button>
-        </main>
-      </body>
-    </html>
-  `;
-
-  const results = await analyzer.analyzeHTML(html);
-
-  assert.equal(results.overview.nativeSemanticElements, 5);
-  assert.equal(results.overview.customSemanticElements, 4);
-  assert.equal(results.overview.totalSemanticCandidates, 9);
-  assert.equal(results.overview.grade, 'D');
-});
-
-test('Analyzer - Counts no-role focus and click elements in semantic overview', async () => {
-  const analyzer = new Analyzer();
-  const html = `
-    <html>
-      <body>
-        <main>
-          <h1>Title</h1>
-          <div tabindex="0">Focusable custom component</div>
-          <span onclick="openMenu()">Clickable custom component</span>
-          <div tabindex="0" onclick="submit()">Focusable clickable custom component</div>
-          <button tabindex="0" onclick="save()">Native action</button>
-        </main>
-      </body>
-    </html>
-  `;
-
-  const results = await analyzer.analyzeHTML(html);
-
-  assert.equal(results.overview.nativeSemanticElements, 3);
-  assert.equal(results.overview.customSemanticElements, 3);
-  assert.equal(results.overview.totalSemanticCandidates, 6);
-});
-
-test('Analyzer - Formats semantic overview', async () => {
-  const analyzer = new Analyzer();
-  const html = '<html><body><main><h1>Title</h1></main></body></html>';
-
-  const results = await analyzer.analyzeHTML(html);
-  const overviewReport = formatSemanticOverview(results.overview);
-  const formattedResults = analyzer.formatResults(results);
-
-  assert.ok(overviewReport.includes('Native semantic elements: 2'));
-  assert.ok(overviewReport.includes('Grade: A'));
-  assert.ok(formattedResults.includes('Semantic Overview'));
-  assert.ok(!formattedResults.includes('Semantica11y Semantic Overview'));
 });
 
 test('Analyzer - Detect ARIA landmarks', async () => {
@@ -236,6 +171,20 @@ test('Analyzer - Detect heading hierarchy issues', async () => {
   assert.ok(headingIssues.length > 0, 'Should find heading hierarchy issues');
 });
 
+test('Analyzer - Warns when page has no h1', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><h2>Section title</h2><p>Body copy</p></body></html>';
+
+  const results = await analyzer.analyzeHTML(html);
+  const headingIssues = results.issues.filter(
+    (i) => i.rule === 'heading-hierarchy'
+  );
+
+  assert.equal(headingIssues.length, 1, 'Should warn when no h1 is present');
+  assert.equal(headingIssues[0].severity, 'warning');
+  assert.equal(headingIssues[0].message, 'Page does not have an h1 heading');
+});
+
 test('Analyzer - Detect ARIA actions', async () => {
   const analyzer = new Analyzer();
   const html = `
@@ -327,9 +276,28 @@ test('Analyzer - Detect ARIA structure', async () => {
         <div role="list">
           <div role="listitem">One</div>
         </div>
+        <div role="article">Article</div>
+        <div role="blockquote">Quote</div>
+        <div role="caption">Table caption</div>
+        <div role="cell">Cell value</div>
+        <span role="code">const value = true;</span>
+        <div role="columnheader">Name</div>
+        <span role="definition">Term</span>
+        <span role="deletion">Removed copy</span>
+        <span role="emphasis">Important copy</span>
+        <div role="figure">Chart</div>
         <div role="table">Data</div>
         <div role="img" aria-label="Chart"></div>
         <div role="paragraph">Body copy</div>
+        <div role="row">Row content</div>
+        <div role="rowgroup">Rows</div>
+        <div role="rowheader">Category</div>
+        <div role="separator"></div>
+        <span role="strong">Important copy</span>
+        <span role="subscript">2</span>
+        <span role="superscript">2</span>
+        <span role="term">Definition term</span>
+        <span role="time">June 7</span>
         <div role="generic">Generic wrapper</div>
       </body>
     </html>
@@ -338,7 +306,47 @@ test('Analyzer - Detect ARIA structure', async () => {
   const results = await analyzer.analyzeHTML(html);
   const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
 
-  assert.equal(structureIssues.length, 7, 'Should find ARIA structure roles');
+  assert.equal(structureIssues.length, 26, 'Should find ARIA structure roles');
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<article>')),
+    'Should suggest article for article role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<blockquote>')),
+    'Should suggest blockquote for blockquote role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<caption>')),
+    'Should suggest caption for caption role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<td>')),
+    'Should suggest td for cell role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<code>')),
+    'Should suggest code for code role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<th scope="col">')),
+    'Should suggest th for columnheader role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<dfn>')),
+    'Should suggest dfn for definition role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<del>')),
+    'Should suggest del for deletion role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<em>')),
+    'Should suggest em for emphasis role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<figure>')),
+    'Should suggest figure for figure role'
+  );
   assert.ok(
     structureIssues.some((issue) => issue.suggestion.includes('<h1> through <h6>')),
     'Should suggest heading elements for heading role'
@@ -364,6 +372,42 @@ test('Analyzer - Detect ARIA structure', async () => {
     'Should suggest p for paragraph role'
   );
   assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<tr>')),
+    'Should suggest tr for row role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<thead>, <tbody>, or <tfoot>')),
+    'Should suggest table section elements for rowgroup role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<th scope="row">')),
+    'Should suggest th for rowheader role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<hr>')),
+    'Should suggest hr for separator role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<strong>')),
+    'Should suggest strong for strong role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<sub>')),
+    'Should suggest sub for subscript role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<sup>')),
+    'Should suggest sup for superscript role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<dt>')),
+    'Should suggest dt for term role'
+  );
+  assert.ok(
+    structureIssues.some((issue) => issue.suggestion.includes('<time>')),
+    'Should suggest time for time role'
+  );
+  assert.ok(
     structureIssues.some((issue) => issue.suggestion.includes('remove role="generic"')),
     'Should suggest removing generic role'
   );
@@ -375,12 +419,36 @@ test('Analyzer - Ignores semantic ARIA structure elements', async () => {
     <html>
       <body>
         <h2 role="heading">Title</h2>
+        <article role="article">Article</article>
+        <blockquote role="blockquote">Quote</blockquote>
         <ul role="list">
           <li role="listitem">One</li>
         </ul>
-        <table role="table"></table>
+        <table role="table">
+          <caption role="caption">Table caption</caption>
+          <tbody>
+            <tr role="row">
+              <th scope="col" role="columnheader">Name</th>
+              <th scope="row" role="rowheader">Category</th>
+              <td role="cell">Value</td>
+            </tr>
+          </tbody>
+        </table>
+        <code role="code">const value = true;</code>
+        <dfn role="definition">Term</dfn>
+        <del role="deletion">Removed copy</del>
+        <em role="emphasis">Important copy</em>
+        <figure role="figure">Chart</figure>
         <img role="img" alt="Chart" />
         <p role="paragraph">Body copy</p>
+        <hr role="separator" />
+        <strong role="strong">Important copy</strong>
+        <sub role="subscript">2</sub>
+        <sup role="superscript">2</sup>
+        <dl>
+          <dt role="term">Definition term</dt>
+        </dl>
+        <time role="time" datetime="2026-06-07">June 7</time>
       </body>
     </html>
   `;
@@ -389,6 +457,65 @@ test('Analyzer - Ignores semantic ARIA structure elements', async () => {
   const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
 
   assert.equal(structureIssues.length, 0, 'Should ignore semantic structure elements');
+});
+
+test('Analyzer - Detect missing image alt attributes', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><img src="logo.png" /></body></html>';
+
+  const results = await analyzer.analyzeHTML(html);
+  const imageIssues = results.issues.filter((i) => i.rule === 'image-alt');
+
+  assert.equal(imageIssues.length, 1, 'Should find images missing alt attributes');
+  assert.equal(imageIssues[0].severity, 'error');
+  assert.equal(imageIssues[0].message, 'Image is missing an alt attribute');
+});
+
+test('Analyzer - Warns about aria-label on images without usable alt text', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <img src="chart.png" aria-label="Quarterly revenue chart" />
+        <img src="spacer.png" alt="" aria-label="Decorative spacer" />
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const imageIssues = results.issues.filter((i) => i.rule === 'image-alt');
+
+  assert.equal(imageIssues.length, 3, 'Should report missing alt and aria-label warnings');
+  assert.equal(imageIssues.filter((issue) => issue.severity === 'error').length, 1);
+  assert.equal(imageIssues.filter((issue) => issue.severity === 'warning').length, 2);
+  assert.ok(
+    imageIssues.some((issue) => issue.message === 'Image uses aria-label without an alt attribute'),
+    'Should warn when aria-label is used without alt'
+  );
+  assert.ok(
+    imageIssues.some((issue) => issue.message === 'Image uses aria-label while alt is empty'),
+    'Should warn when aria-label is used with empty alt'
+  );
+});
+
+test('Analyzer - Warns when aria-label overrides image alt text', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <img src="chart.png" alt="Quarterly revenue chart" aria-label="Sales graph" />
+        <img src="logo.png" alt="Semantica11y logo" />
+        <img src="team.png" alt="Team portrait" aria-label="Team portrait" />
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const imageIssues = results.issues.filter((i) => i.rule === 'image-alt');
+
+  assert.equal(imageIssues.length, 1, 'Should warn only when aria-label differs from alt');
+  assert.equal(imageIssues[0].severity, 'warning');
+  assert.equal(imageIssues[0].message, 'aria-label overrides image alt text');
 });
 
 test('Analyzer - Detect missing role action', async () => {
@@ -583,6 +710,7 @@ test('Analyzer - Format results', async () => {
   assert.ok(formatted.includes('Errors ('), 'Should show errors section');
   assert.ok(formatted.includes('Warnings ('), 'Should show warnings section');
   assert.ok(formatted.includes('Suggestions ('), 'Should show suggestions section');
+  assert.ok(!formatted.includes('Semantic Overview'), 'Should not show semantic overview');
 });
 
 test('Reporter - Export console report to text file', async () => {

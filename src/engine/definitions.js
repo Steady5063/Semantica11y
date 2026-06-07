@@ -5,6 +5,7 @@
 import { ariaActionsRule } from './rules/aria-actions.js';
 import { ariaStructureRule } from './rules/aria-structure.js';
 import { headingHierarchyRule } from './rules/heading-hierarchy.js';
+import { imageAltRule } from './rules/image-alt.js';
 import { missingFormLabelsRule } from './rules/missing-form-labels.js';
 import { missingKeyLandmarkRule } from './rules/missing-key-landmark.js';
 import { missingRoleActionRule } from './rules/missing-role-action.js';
@@ -21,6 +22,7 @@ export const DEFAULT_RULES = [
   ariaActionsRule,
   ariaStructureRule,
   missingRoleActionRule,
+  imageAltRule,
   nativeLabelRule,
   missingKeyLandmarkRule,
 ];

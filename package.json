@@ -15,7 +15,6 @@
     "./analyzer": "./src/analyzer.js",
     "./rules": "./src/engine/index.js",
     "./engine": "./src/engine/index.js",
-    "./overview": "./src/engine/overview/index.js",
     "./reporter": "./src/engine/reporter/index.js"
   },
   "scripts": {

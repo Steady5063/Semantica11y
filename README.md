@@ -89,13 +89,6 @@ console.log(results);
     warnings: 2,
     suggestions: 1
   },
-  overview: {
-    nativeSemanticElements: 12,
-    customSemanticElements: 3,
-    totalSemanticCandidates: 15,
-    semanticRatio: 0.8,
-    grade: 'B'
-  },
   issues: [
     {
       severity: 'warning',
@@ -108,17 +101,6 @@ console.log(results);
   ]
 }
 */
-```
-
-### Semantic Overview
-
-```javascript
-import { Analyzer, formatSemanticOverview } from 'semantica11y';
-
-const analyzer = new Analyzer();
-const results = await analyzer.analyzeHTML(html);
-
-console.log(formatSemanticOverview(results.overview));
 ```
 
 ### Reports
@@ -166,9 +148,9 @@ Detects form inputs without proper labels.
 - Suggestion: Associate label with input using `for` attribute or ARIA
 
 ### 3. **heading-hierarchy**
-Validates heading structure (H1 → H2 → H3, etc.).
+Validates heading structure (H1 → H2 → H3, etc.) and checks that the page has an H1.
 - Severity: Warning
-- Suggestion: Fix skipped heading levels
+- Suggestion: Fix skipped heading levels and add one `<h1>` for the main page topic
 
 ### 4. **aria-actions**
 Detects elements using ARIA action roles that should use semantic elements, including mismatched ARIA roles on native action elements.
@@ -183,7 +165,7 @@ Checks for main, navigation, footer, and page heading structure, whether built w
 ### 6. **aria-structure**
 Detects elements using ARIA structure roles that should use semantic elements.
 - Severity: Warning
-- Suggestion: Use semantic structure such as `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<img>`, or `<p>`
+- Suggestion: Use semantic structure such as `<article>`, `<blockquote>`, `<caption>`, `<td>`, `<code>`, `<th scope="col">`, `<dfn>`, `<del>`, `<em>`, `<figure>`, `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<img>`, `<p>`, `<tr>`, `<thead>`, `<tbody>`, `<tfoot>`, `<th scope="row">`, `<hr>`, `<strong>`, `<sub>`, `<sup>`, `<dt>`, or `<time>`
 
 ### 7. **missing-role-action**
 Detects non-semantic action elements with `tabindex="0"` or click handlers that do not have an action role.
@@ -194,6 +176,11 @@ Detects non-semantic action elements with `tabindex="0"` or click handlers that 
 Detects native action elements with `aria-label` values that duplicate or completely differ from native label text.
 - Severity: Warning for duplicate labels, Error for unrelated labels
 - Suggestion: Remove unnecessary `aria-label` values or make sure they include the visible/native label text. Helper text such as "opens in a new window" or "opens in new window" is allowed.
+
+### 9. **image-alt**
+Detects images missing `alt` attributes and images where `aria-label` conflicts with or replaces `alt`.
+- Severity: Error for missing `alt`, Warning for `aria-label` with no `alt`, `aria-label` with `alt=""`, or `aria-label` overriding `alt` text
+- Suggestion: Put image alternative text in `alt`, use `alt=""` only for decorative images, and avoid `aria-label` on images
 
 ## 🧪 Testing
 
@@ -239,7 +226,6 @@ semantica11y/
 │   └── engine/
 │       ├── index.js       # RuleEngine class
 │       ├── definitions.js # Default rule registry
-│       ├── overview/      # Semantic overview reporting
 │       ├── reporter/      # Report formatting and exporting
 │       ├── rules/         # Individual rule definitions
 │       ├── semantic-role-mappings.js

@@ -1,5 +1,4 @@
 import { writeFile } from 'fs/promises';
-import { formatSemanticOverview } from '../overview/index.js';
 
 const COLORS = {
   reset: '\x1b[0m',
@@ -56,11 +55,6 @@ export function formatConsoleReport(results, options = {}) {
   output += `  Warnings: ${results.summary.warnings}\n`;
   output += `  Suggestions: ${results.summary.suggestions}\n`;
   output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-
-  if (results.overview) {
-    output += `\n${formatSemanticOverview(results.overview)}\n`;
-    output += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
-  }
 
   if (results.issues.length > 0) {
     output += `\n${colorize('Findings By Category', COLORS.bold, colors)}\n`;

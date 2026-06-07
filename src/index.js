@@ -8,11 +8,6 @@ export { Analyzer } from './analyzer.js';
 export { RuleEngine } from './engine/index.js';
 export { DEFAULT_RULES, CUSTOM_RULES } from './engine/definitions.js';
 export {
-  createSemanticOverview,
-  formatSemanticOverview,
-  printSemanticOverview,
-} from './engine/overview/index.js';
-export {
   exportTextReport,
   formatConsoleReport,
   printConsoleReport,

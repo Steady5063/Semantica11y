@@ -4,7 +4,6 @@
 
 import { JSDOM } from 'jsdom';
 import { RuleEngine } from './engine/index.js';
-import { createSemanticOverview } from './engine/overview/index.js';
 import { formatConsoleReport } from './engine/reporter/index.js';
 
 export class Analyzer {
@@ -44,10 +43,7 @@ export class Analyzer {
           suggestions: 0,
         },
         issues: [],
-        overview: null,
       };
-
-      this.results.overview = createSemanticOverview(document);
 
       // Analyze the document with all rules
       await this.ruleEngine.analyze(document, this.results);

@@ -1,42 +1,5 @@
+import { ARIA_STRUCTURE_ROLE_MAPPINGS } from '../aria-structure-role-mappings.js';
 import { getElementSignature, getLineNumber } from '../utils.js';
-
-const ARIA_STRUCTURE_ROLE_MAPPINGS = [
-  {
-    role: 'heading',
-    semanticElement: '<h1> through <h6>',
-    isSemanticMatch: (element) => /^h[1-6]$/i.test(element.tagName),
-  },
-  {
-    role: 'list',
-    semanticElement: '<ul> or <ol>',
-    isSemanticMatch: (element) => ['ul', 'ol'].includes(element.tagName.toLowerCase()),
-  },
-  {
-    role: 'listitem',
-    semanticElement: '<li>',
-    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'li',
-  },
-  {
-    role: 'table',
-    semanticElement: '<table>',
-    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'table',
-  },
-  {
-    role: 'img',
-    semanticElement: '<img>',
-    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'img',
-  },
-  {
-    role: 'paragraph',
-    semanticElement: '<p>',
-    isSemanticMatch: (element) => element.tagName.toLowerCase() === 'p',
-  },
-  {
-    role: 'generic',
-    semanticElement: 'a more specific semantic element or remove role="generic"',
-    isSemanticMatch: () => false,
-  },
-];
 
 export const ariaStructureRule = {
   id: 'aria-structure',

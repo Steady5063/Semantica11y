@@ -9,6 +9,17 @@ export const headingHierarchyRule = {
     const issues = [];
     const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
 
+    if (!document.querySelector('h1')) {
+      issues.push({
+        severity: 'warning',
+        rule: 'heading-hierarchy',
+        element: 'document',
+        message: 'Page does not have an h1 heading',
+        suggestion: 'Add one <h1> that describes the main topic of the page',
+        line: 0,
+      });
+    }
+
     let previousLevel = 0;
 
     headings.forEach((heading) => {
