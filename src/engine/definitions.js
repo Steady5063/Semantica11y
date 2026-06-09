@@ -3,6 +3,8 @@
  */
 
 import { ariaActionsRule } from './rules/aria-actions.js';
+import { ariaExpandedRule } from './rules/aria-expanded.js';
+import { ariaModalRule } from './rules/aria-modal.js';
 import { ariaStructureRule } from './rules/aria-structure.js';
 import { headingHierarchyRule } from './rules/heading-hierarchy.js';
 import { imageAltRule } from './rules/image-alt.js';
@@ -20,6 +22,8 @@ export const DEFAULT_RULES = [
   missingFormLabelsRule,
   headingHierarchyRule,
   ariaActionsRule,
+  ariaExpandedRule,
+  ariaModalRule,
   ariaStructureRule,
   missingRoleActionRule,
   imageAltRule,

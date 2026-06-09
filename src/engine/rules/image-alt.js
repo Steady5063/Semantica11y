@@ -16,12 +16,12 @@ export const imageAltRule = {
     const issues = [];
 
     document.querySelectorAll('img').forEach((image) => {
-      const hasAlt = image.hasAttribute('alt');
+      const hasAltAttribute = image.hasAttribute('alt');
       const altText = image.getAttribute('alt') || '';
       const ariaLabel = image.getAttribute('aria-label');
       const hasAriaLabel = ariaLabel !== null;
 
-      if (!hasAlt) {
+      if (!hasAltAttribute) {
         issues.push({
           severity: 'error',
           rule: 'image-alt',
@@ -36,7 +36,7 @@ export const imageAltRule = {
         return;
       }
 
-      if (!hasAlt) {
+      if (!hasAltAttribute) {
         issues.push({
           severity: 'warning',
           rule: 'image-alt',

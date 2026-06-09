@@ -30,14 +30,44 @@ function colorize(text, color, useColors) {
   return useColors ? `${color}${text}${COLORS.reset}` : text;
 }
 
-function formatIssue(issue, index) {
-  let output = `\n${index + 1}. ${issue.rule}\n`;
-  output += `   Element: ${issue.element}\n`;
-  output += `   Message: ${issue.message}\n`;
+function groupIssues(issues) {
+  const groups = new Map();
 
-  if (issue.suggestion) {
-    output += `   Suggestion: ${issue.suggestion}\n`;
+  issues.forEach((issue) => {
+    const key = JSON.stringify({
+      rule: issue.rule,
+      message: issue.message,
+      suggestion: issue.suggestion || '',
+    });
+
+    if (!groups.has(key)) {
+      groups.set(key, {
+        rule: issue.rule,
+        message: issue.message,
+        suggestion: issue.suggestion,
+        elements: [],
+      });
+    }
+
+    groups.get(key).elements.push(issue.element);
+  });
+
+  return Array.from(groups.values());
+}
+
+function formatIssueGroup(group, index) {
+  const instanceLabel = group.elements.length === 1 ? 'instance' : 'instances';
+  let output = `\n${index + 1}. Rule: ${group.rule} (${group.elements.length} ${instanceLabel})\n`;
+  output += `   Message: ${group.message}\n`;
+
+  if (group.suggestion) {
+    output += `   Suggestion: ${group.suggestion}\n`;
   }
+
+  output += '   Elements:\n';
+  group.elements.forEach((element) => {
+    output += `     - ${element}\n`;
+  });
 
   return output;
 }
@@ -70,8 +100,8 @@ export function formatConsoleReport(results, options = {}) {
         return;
       }
 
-      issues.forEach((issue, index) => {
-        output += formatIssue(issue, index);
+      groupIssues(issues).forEach((group, index) => {
+        output += formatIssueGroup(group, index);
       });
     });
   } else {

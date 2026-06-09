@@ -1,6 +1,20 @@
 import { SEMANTIC_ROLE_MAPPINGS } from '../semantic-role-mappings.js';
 
-const REQUIRED_LANDMARK_ELEMENTS = ['main', 'nav', 'footer'];
+const REQUIRED_LANDMARK_ELEMENTS = ['header', 'main', 'footer'];
+
+function hasSemanticElement(document, element) {
+  return document.getElementsByTagName(element).length > 0;
+}
+
+function hasAriaRole(document, ariaRole) {
+  return Array.from(document.querySelectorAll('[role]')).some((element) =>
+    element
+      .getAttribute('role')
+      .toLowerCase()
+      .split(/\s+/)
+      .includes(ariaRole)
+  );
+}
 
 export const missingKeyLandmarkRule = {
   id: 'missing-key-landmark',
@@ -13,10 +27,10 @@ export const missingKeyLandmarkRule = {
     SEMANTIC_ROLE_MAPPINGS
       .filter(({ element }) => REQUIRED_LANDMARK_ELEMENTS.includes(element))
       .forEach(({ element, ariaRole, missingMessage, missingSuggestion }) => {
-        const hasSemanticElement = document.querySelector(element);
-        const hasAriaRole = document.querySelector(`[role~="${ariaRole}"]`);
+        const hasRequiredSemanticElement = hasSemanticElement(document, element);
+        const hasRequiredAriaRole = hasAriaRole(document, ariaRole);
 
-        if (hasSemanticElement || hasAriaRole) {
+        if (hasRequiredSemanticElement || hasRequiredAriaRole) {
           return;
         }
 
@@ -31,7 +45,7 @@ export const missingKeyLandmarkRule = {
       });
 
     const hasHeading = document.querySelector('h1, h2, h3, h4, h5, h6');
-    const hasHeadingRole = document.querySelector('[role~="heading"]');
+    const hasHeadingRole = hasAriaRole(document, 'heading');
 
     if (!hasHeading && !hasHeadingRole) {
       issues.push({

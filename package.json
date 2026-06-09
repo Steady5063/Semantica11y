@@ -39,5 +39,7 @@
   "dependencies": {
     "jsdom": "^24.0.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "playwright": "^1.60.0"
+  }
 }

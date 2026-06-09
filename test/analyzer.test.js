@@ -76,10 +76,10 @@ test('Analyzer - Detect missing key landmarks', async () => {
     (i) => i.rule === 'missing-key-landmark'
   );
 
-  assert.equal(landmarkIssues.length, 4, 'Should find missing main, nav, footer, and heading');
+  assert.equal(landmarkIssues.length, 4, 'Should find missing header, main, footer, and heading');
   assert.ok(
-    landmarkIssues.some((issue) => issue.suggestion.includes('<nav>')),
-    'Should suggest semantic navigation as an option'
+    landmarkIssues.some((issue) => issue.suggestion.includes('<header>')),
+    'Should suggest semantic header as an option'
   );
   assert.ok(
     landmarkIssues.some((issue) => issue.suggestion.includes('<main>')),
@@ -97,7 +97,7 @@ test('Analyzer - Accept semantic key landmarks and heading', async () => {
     <html>
       <body>
         <h1>Title</h1>
-        <div role="navigation">Nav</div>
+        <header>Header</header>
         <main>Main</main>
         <footer>Footer</footer>
       </body>
@@ -112,7 +112,7 @@ test('Analyzer - Accept semantic key landmarks and heading', async () => {
   assert.equal(
     landmarkIssues.length,
     0,
-    'Should accept main, nav, footer, and heading from semantic elements or ARIA roles'
+    'Should accept header, main, footer, and heading from semantic elements or ARIA roles'
   );
 });
 
@@ -122,7 +122,7 @@ test('Analyzer - Accept ARIA heading for missing key landmarks', async () => {
     <html>
       <body>
         <div role="heading" aria-level="1">Title</div>
-        <div role="navigation">Nav</div>
+        <div role="banner">Header</div>
         <main>Main</main>
         <footer>Footer</footer>
       </body>
@@ -135,6 +135,53 @@ test('Analyzer - Accept ARIA heading for missing key landmarks', async () => {
   );
 
   assert.equal(landmarkIssues.length, 0, 'Should accept role="heading" as a page heading');
+});
+
+test('Analyzer - Does not suggest footer when semantic footer exists', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <p>Content</p>
+        <footer>Footer</footer>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const landmarkIssues = results.issues.filter(
+    (i) => i.rule === 'missing-key-landmark'
+  );
+
+  assert.ok(
+    !landmarkIssues.some((issue) => issue.suggestion.includes('<footer>')),
+    'Should not suggest footer when a footer element exists'
+  );
+});
+
+test('Analyzer - Accepts ARIA contentinfo role for footer landmark', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <h1>Title</h1>
+        <header>Header</header>
+        <main>Main</main>
+        <div role="ContentInfo">Footer</div>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const landmarkIssues = results.issues.filter(
+    (i) => i.rule === 'missing-key-landmark'
+  );
+
+  assert.equal(
+    landmarkIssues.length,
+    0,
+    'Should accept role="contentinfo" as a footer landmark'
+  );
 });
 
 test('Analyzer - Detect missing form labels', async () => {
@@ -157,6 +204,37 @@ test('Analyzer - Ignore hidden inputs for missing form labels', async () => {
   const labelIssues = results.issues.filter((i) => i.rule === 'missing-form-labels');
 
   assert.equal(labelIssues.length, 0, 'Should ignore hidden inputs');
+});
+
+test('Analyzer - Allows form controls wrapped by labels', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <form>
+          <label>
+            Email
+            <input type="email" name="email" />
+          </label>
+          <label>
+            Message
+            <textarea name="message"></textarea>
+          </label>
+          <label>
+            Topic
+            <select name="topic">
+              <option>Support</option>
+            </select>
+          </label>
+        </form>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const labelIssues = results.issues.filter((i) => i.rule === 'missing-form-labels');
+
+  assert.equal(labelIssues.length, 0, 'Should allow implicit labels that wrap controls');
 });
 
 test('Analyzer - Detect heading hierarchy issues', async () => {
@@ -267,6 +345,82 @@ test('Analyzer - Detect ARIA action role overrides on native elements', async ()
   );
 });
 
+test('Analyzer - Detect aria-expanded disclosure controls', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <button aria-expanded="true">Menu</button>
+        <div aria-expanded="false">More filters</div>
+        <button aria-expanded="mixed">Ignored</button>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const expandedIssues = results.issues.filter((i) => i.rule === 'aria-expanded');
+
+  assert.equal(expandedIssues.length, 2, 'Should find true and false aria-expanded states');
+  assert.ok(
+    expandedIssues.every((issue) => issue.severity === 'warning'),
+    'Should report aria-expanded findings as warnings'
+  );
+  assert.ok(
+    expandedIssues.every((issue) => issue.suggestion.includes('<details>')),
+    'Should suggest details for disclosure content'
+  );
+  assert.ok(
+    expandedIssues.every((issue) => issue.suggestion.includes('<summary>')),
+    'Should suggest summary for disclosure labels'
+  );
+});
+
+test('Analyzer - Detect aria-modal and dialog tabindex issues', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <div role="dialog" aria-modal="true">Modal content</div>
+        <section role="dialog">Dialog content</section>
+        <dialog tabindex="-1">Native dialog</dialog>
+        <dialog>Valid dialog</dialog>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const modalIssues = results.issues.filter((i) => i.rule === 'aria-modal');
+
+  assert.equal(modalIssues.length, 3, 'Should find ARIA dialog/modal and dialog tabindex issues');
+  assert.ok(
+    modalIssues.some(
+      (issue) =>
+        issue.severity === 'warning' &&
+        issue.message === 'Element uses aria-modal for modal dialog behavior' &&
+        issue.suggestion.includes('<dialog>')
+    ),
+    'Should warn when aria-modal is used'
+  );
+  assert.ok(
+    modalIssues.some(
+      (issue) =>
+        issue.severity === 'warning' &&
+        issue.message === 'Element uses ARIA dialog role instead of a native dialog element' &&
+        issue.suggestion.includes('<dialog>')
+    ),
+    'Should warn when role="dialog" is used'
+  );
+  assert.ok(
+    modalIssues.some(
+      (issue) =>
+        issue.severity === 'error' &&
+        issue.message === '<dialog> element must not use tabindex' &&
+        issue.suggestion.includes('Remove tabindex')
+    ),
+    'Should error when dialog has tabindex'
+  );
+});
+
 test('Analyzer - Detect ARIA structure', async () => {
   const analyzer = new Analyzer();
   const html = `
@@ -287,7 +441,6 @@ test('Analyzer - Detect ARIA structure', async () => {
         <span role="emphasis">Important copy</span>
         <div role="figure">Chart</div>
         <div role="table">Data</div>
-        <div role="img" aria-label="Chart"></div>
         <div role="paragraph">Body copy</div>
         <div role="row">Row content</div>
         <div role="rowgroup">Rows</div>
@@ -306,7 +459,7 @@ test('Analyzer - Detect ARIA structure', async () => {
   const results = await analyzer.analyzeHTML(html);
   const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
 
-  assert.equal(structureIssues.length, 26, 'Should find ARIA structure roles');
+  assert.equal(structureIssues.length, 25, 'Should find ARIA structure roles');
   assert.ok(
     structureIssues.some((issue) => issue.suggestion.includes('<article>')),
     'Should suggest article for article role'
@@ -362,10 +515,6 @@ test('Analyzer - Detect ARIA structure', async () => {
   assert.ok(
     structureIssues.some((issue) => issue.suggestion.includes('<table>')),
     'Should suggest table for table role'
-  );
-  assert.ok(
-    structureIssues.some((issue) => issue.suggestion.includes('<img>')),
-    'Should suggest img for img role'
   );
   assert.ok(
     structureIssues.some((issue) => issue.suggestion.includes('<p>')),
@@ -439,7 +588,6 @@ test('Analyzer - Ignores semantic ARIA structure elements', async () => {
         <del role="deletion">Removed copy</del>
         <em role="emphasis">Important copy</em>
         <figure role="figure">Chart</figure>
-        <img role="img" alt="Chart" />
         <p role="paragraph">Body copy</p>
         <hr role="separator" />
         <strong role="strong">Important copy</strong>
@@ -459,6 +607,23 @@ test('Analyzer - Ignores semantic ARIA structure elements', async () => {
   assert.equal(structureIssues.length, 0, 'Should ignore semantic structure elements');
 });
 
+test('Analyzer - Allows role img in ARIA structure rule', async () => {
+  const analyzer = new Analyzer();
+  const html = `
+    <html>
+      <body>
+        <svg role="img" aria-label="Search icon"></svg>
+        <div role="img" aria-label="Chart"></div>
+      </body>
+    </html>
+  `;
+
+  const results = await analyzer.analyzeHTML(html);
+  const structureIssues = results.issues.filter((i) => i.rule === 'aria-structure');
+
+  assert.equal(structureIssues.length, 0, 'Should not report role="img" as structure misuse');
+});
+
 test('Analyzer - Detect missing image alt attributes', async () => {
   const analyzer = new Analyzer();
   const html = '<html><body><img src="logo.png" /></body></html>';
@@ -469,6 +634,16 @@ test('Analyzer - Detect missing image alt attributes', async () => {
   assert.equal(imageIssues.length, 1, 'Should find images missing alt attributes');
   assert.equal(imageIssues[0].severity, 'error');
   assert.equal(imageIssues[0].message, 'Image is missing an alt attribute');
+});
+
+test('Analyzer - Allows image alt attribute without explicit value', async () => {
+  const analyzer = new Analyzer();
+  const html = '<html><body><img src="logo.png" alt /></body></html>';
+
+  const results = await analyzer.analyzeHTML(html);
+  const imageIssues = results.issues.filter((i) => i.rule === 'image-alt');
+
+  assert.equal(imageIssues.length, 0, 'Should treat bare alt as an existing alt attribute');
 });
 
 test('Analyzer - Warns about aria-label on images without usable alt text', async () => {
@@ -699,7 +874,7 @@ test('Analyzer - Allows aria-label that contains native label text', async () =>
 
 test('Analyzer - Format results', async () => {
   const analyzer = new Analyzer();
-  const html = '<html><body><img src="test.png" /></body></html>';
+  const html = '<html><body><img id="one" src="one.png" /><img id="two" src="two.png" /></body></html>';
 
   const results = await analyzer.analyzeHTML(html);
   const formatted = analyzer.formatResults(results);
@@ -710,6 +885,10 @@ test('Analyzer - Format results', async () => {
   assert.ok(formatted.includes('Errors ('), 'Should show errors section');
   assert.ok(formatted.includes('Warnings ('), 'Should show warnings section');
   assert.ok(formatted.includes('Suggestions ('), 'Should show suggestions section');
+  assert.ok(formatted.includes('Rule: image-alt (2 instances)'), 'Should group repeated findings');
+  assert.ok(formatted.includes('Elements:'), 'Should list grouped finding elements');
+  assert.ok(formatted.includes('- <img id="one">'), 'Should list first affected element');
+  assert.ok(formatted.includes('- <img id="two">'), 'Should list second affected element');
   assert.ok(!formatted.includes('Semantic Overview'), 'Should not show semantic overview');
 });
 
@@ -727,6 +906,7 @@ test('Reporter - Export console report to text file', async () => {
   assert.ok(report.includes('Semantica11y Analysis Report'));
   assert.ok(report.includes('Errors ('));
   assert.ok(report.includes('Warnings ('));
+  assert.ok(report.includes('Rule:'), 'Text export should label each finding rule');
   assert.ok(!/\x1b\[[0-9;]*m/.test(report), 'Text export should not include ANSI colors');
 });
 

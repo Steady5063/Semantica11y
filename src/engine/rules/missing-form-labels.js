@@ -20,8 +20,13 @@ export const missingFormLabelsRule = {
       const name = input.name;
       const ariaLabel = input.getAttribute('aria-label');
       const ariaLabelledBy = input.getAttribute('aria-labelledby');
+      const wrappingLabel = input.closest('label');
 
       if (id && document.querySelector(`label[for="${id}"]`)) {
+        return;
+      }
+
+      if (wrappingLabel) {
         return;
       }
 

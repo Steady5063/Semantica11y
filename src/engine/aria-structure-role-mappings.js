@@ -64,11 +64,6 @@ export const ARIA_STRUCTURE_ROLE_MAPPINGS = [
     isSemanticMatch: (element) => /^h[1-6]$/i.test(element.tagName),
   },
   {
-    role: 'img',
-    semanticElement: '<img>',
-    isSemanticMatch: (element) => tagName(element) === 'img',
-  },
-  {
     role: 'list',
     semanticElement: '<ul> or <ol>',
     isSemanticMatch: (element) => ['ul', 'ol'].includes(tagName(element)),

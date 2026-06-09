@@ -145,7 +145,7 @@ Detects elements using ARIA landmark roles that should use semantic elements.
 ### 2. **missing-form-labels**
 Detects form inputs without proper labels.
 - Severity: Error
-- Suggestion: Associate label with input using `for` attribute or ARIA
+- Suggestion: Associate labels with controls using `for`, a wrapping `<label>`, or ARIA
 
 ### 3. **heading-hierarchy**
 Validates heading structure (H1 → H2 → H3, etc.) and checks that the page has an H1.
@@ -157,27 +157,37 @@ Detects elements using ARIA action roles that should use semantic elements, incl
 - Severity: Warning
 - Suggestion: Use semantic controls such as `<button>`, `<input type="checkbox">`, `<a>`, `<input>`, or `<textarea>`
 
-### 5. **missing-key-landmark**
-Checks for main, navigation, footer, and page heading structure, whether built with semantic elements or ARIA roles.
-- Severity: Suggestion
-- Suggestion: Add missing structure such as `<main>`, `<nav>`, `<footer>`, a heading, or matching ARIA roles
+### 5. **aria-expanded**
+Detects elements using `aria-expanded="true"` or `aria-expanded="false"` for disclosure state.
+- Severity: Warning
+- Suggestion: Use native `<details>` and `<summary>` elements for expandable content
 
-### 6. **aria-structure**
+### 6. **aria-modal**
+Detects elements using `aria-modal`, elements using `role="dialog"`, and `<dialog>` elements with `tabindex`.
+- Severity: Warning for `aria-modal` or `role="dialog"`, Error for `tabindex` on `<dialog>`
+- Suggestion: Use native `<dialog>` for modal dialogs and remove `tabindex` from `<dialog>`
+
+### 7. **missing-key-landmark**
+Checks for header, main, footer, and page heading structure, whether built with semantic elements or ARIA roles.
+- Severity: Suggestion
+- Suggestion: Add missing structure such as `<header>`, `<main>`, `<footer>`, a heading, or matching ARIA roles
+
+### 8. **aria-structure**
 Detects elements using ARIA structure roles that should use semantic elements.
 - Severity: Warning
-- Suggestion: Use semantic structure such as `<article>`, `<blockquote>`, `<caption>`, `<td>`, `<code>`, `<th scope="col">`, `<dfn>`, `<del>`, `<em>`, `<figure>`, `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<img>`, `<p>`, `<tr>`, `<thead>`, `<tbody>`, `<tfoot>`, `<th scope="row">`, `<hr>`, `<strong>`, `<sub>`, `<sup>`, `<dt>`, or `<time>`
+- Suggestion: Use semantic structure such as `<article>`, `<blockquote>`, `<caption>`, `<td>`, `<code>`, `<th scope="col">`, `<dfn>`, `<del>`, `<em>`, `<figure>`, `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<p>`, `<tr>`, `<thead>`, `<tbody>`, `<tfoot>`, `<th scope="row">`, `<hr>`, `<strong>`, `<sub>`, `<sup>`, `<dt>`, or `<time>`
 
-### 7. **missing-role-action**
+### 9. **missing-role-action**
 Detects non-semantic action elements with `tabindex="0"` or click handlers that do not have an action role.
 - Severity: Warning
 - Suggestion: Use native controls such as `<button>` or `<a>`, or add an appropriate action role
 
-### 8. **native-label**
+### 10. **native-label**
 Detects native action elements with `aria-label` values that duplicate or completely differ from native label text.
 - Severity: Warning for duplicate labels, Error for unrelated labels
 - Suggestion: Remove unnecessary `aria-label` values or make sure they include the visible/native label text. Helper text such as "opens in a new window" or "opens in new window" is allowed.
 
-### 9. **image-alt**
+### 11. **image-alt**
 Detects images missing `alt` attributes and images where `aria-label` conflicts with or replaces `alt`.
 - Severity: Error for missing `alt`, Warning for `aria-label` with no `alt`, `aria-label` with `alt=""`, or `aria-label` overriding `alt` text
 - Suggestion: Put image alternative text in `alt`, use `alt=""` only for decorative images, and avoid `aria-label` on images
@@ -196,10 +206,16 @@ Run tests in watch mode:
 npm run test:watch
 ```
 
-Run examples:
+Run the Playwright example against `https://example.com`:
 
 ```bash
-npm run example
+node examples/basic.js
+```
+
+Analyze a different page:
+
+```bash
+node examples/basic.js https://www.statefarm.com
 ```
 
 ## 📦 Build Package

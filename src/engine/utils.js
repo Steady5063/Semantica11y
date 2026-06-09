@@ -8,7 +8,15 @@ export function getLineNumber(element) {
 }
 
 export function getElementSignature(element) {
-  const attributes = ['id', 'class', 'role', 'tabindex', 'aria-label']
+  const attributes = [
+    'id',
+    'class',
+    'role',
+    'tabindex',
+    'aria-label',
+    'aria-expanded',
+    'aria-modal',
+  ]
     .map((attribute) => {
       const value = element.getAttribute(attribute);
       return value ? ` ${attribute}="${value}"` : '';

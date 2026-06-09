@@ -35,6 +35,7 @@ Checks `input`, `textarea`, and `select` elements for an accessible label.
 Passes when:
 - The control is a hidden input.
 - The control has an `id` matched by `label[for]`.
+- The control is wrapped by a `label` element.
 - The control has `aria-label`.
 - The control has `aria-labelledby`.
 
@@ -77,6 +78,38 @@ Individual checks:
 Passes when the element already matches the native semantic element for that
 role.
 
+## `aria-expanded.js`
+
+Exports: `ariaExpandedRule`
+Rule id: `aria-expanded`
+Severity: `warning`
+
+Checks elements with `aria-expanded="true"` or `aria-expanded="false"`.
+
+Individual checks:
+- Expanded disclosure state: warns when an element uses `aria-expanded="true"`.
+- Collapsed disclosure state: warns when an element uses `aria-expanded="false"`.
+
+The suggestion is to use native `<details>` and `<summary>` elements for
+expandable content.
+
+## `aria-modal.js`
+
+Exports: `ariaModalRule`
+Rule id: `aria-modal`
+
+Checks modal dialog patterns.
+
+Individual checks:
+- ARIA modal usage: reports a `warning` when an element has `aria-modal`.
+- ARIA dialog role usage: reports a `warning` when an element has `role="dialog"`.
+- Dialog tabindex usage: reports an `error` when a `<dialog>` element has
+  `tabindex`.
+
+The suggestion is to use native `<dialog>` for modal dialogs and remove
+`tabindex` from `<dialog>`. MDN documents that `tabindex` must not be used on
+the `<dialog>` element.
+
 ## `aria-structure.js`
 
 Exports: `ariaStructureRule`
@@ -101,7 +134,6 @@ Covered roles:
 - `role="figure"` suggests `<figure>`
 - `role="generic"` suggests a more specific semantic element or removing `role="generic"`
 - `role="heading"` suggests `<h1>` through `<h6>`
-- `role="img"` suggests `<img>`
 - `role="list"` suggests `<ul>` or `<ol>`
 - `role="listitem"` suggests `<li>`
 - `role="paragraph"` suggests `<p>`
@@ -192,8 +224,8 @@ Severity: `suggestion`
 Checks whether the page has core structure landmarks and a heading.
 
 Individual checks:
+- Missing header landmark: passes with `<header>` or `role="banner"`.
 - Missing main content landmark: passes with `<main>` or `role="main"`.
-- Missing navigation landmark: passes with `<nav>` or `role="navigation"`.
 - Missing footer landmark: passes with `<footer>` or `role="contentinfo"`.
 - Missing page heading: passes with any `h1` through `h6`, or `role="heading"`.
 

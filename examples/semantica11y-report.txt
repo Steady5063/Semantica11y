@@ -1,0 +1,213 @@
+
+Semantica11y Analysis Report
+URL: https://www.geico.com/
+Time: 2026-06-09T13:48:35.980Z
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Total Findings: 121
+  Errors: 41
+  Warnings: 78
+  Suggestions: 2
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Findings By Category
+
+Errors (41)
+────────────────────────────
+
+1. Rule: missing-form-labels (2 instances)
+   Message: Form input is not properly labeled
+   Suggestion: Add label: <label for="">Label text</label>
+   Elements:
+     - <input class="submitButton btn btn--primary btn--full-mobile">
+     - <input class="submitButton btn btn--primary btn--full-mobile">
+
+2. Rule: missing-form-labels (1 instance)
+   Message: Form input is not properly labeled
+   Suggestion: Add label: <label for="continueButton">Label text</label>
+   Elements:
+     - <input id="continueButton" class="btn btn--primary">
+
+3. Rule: native-label (38 instances)
+   Message: aria-label does not match native label text
+   Suggestion: Update aria-label to match the visible label, or remove it and rely on native text
+   Elements:
+     - <a class="btn btn--secondary" aria-label="Read More about Boat Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Life Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Umbrella Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Identity Protection Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Flood Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Travel Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Overseas Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Business Owners Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about General Liability Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Professional Liability Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Workers' Compensation">
+     - <a class="btn btn--secondary" aria-label="Read More about Medical Malpractice">
+     - <a class="btn btn--secondary" aria-label="Read More about Classic Auto Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Pet Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Jewelry Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Mexico Auto Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Earthquake Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Event Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Bicycle Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Boat Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Life Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Umbrella Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Identity Protection Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Flood Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Travel Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Overseas Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Business Owners Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about General Liability Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Professional Liability Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Workers' Compensation">
+     - <a class="btn btn--secondary" aria-label="Read More about Medical Malpractice">
+     - <a class="btn btn--secondary" aria-label="Read More about Classic Auto Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Pet Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Jewelry Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Mexico Auto Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Earthquake Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Event Insurance">
+     - <a class="btn btn--secondary" aria-label="Read More about Bicycle Insurance">
+
+Warnings (78)
+────────────────────────────
+
+1. Rule: aria-landmarks (7 instances)
+   Message: Element appears to be used for a page section
+   Suggestion: Consider using <section> semantic element instead
+   Elements:
+     - <div id="external_disclaimer_manage_modal" class="external_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
+     - <div id="bundle_modal" class="modal" role="region">
+     - <div id="recall_modal" class="modal" role="region" aria-label="Retrieve saved quote dialog">
+     - <div id="catx_disclaimer_modal" class="catx_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
+     - <div id="external_disclaimer_quote_modal" class="external_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
+     - <div id="property_jewelry_modal" class="modal" role="region" aria-label="Jewelry insurance dialog">
+     - <div id="external_disclaimer_recall_modal" class="external_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
+
+2. Rule: aria-landmarks (1 instance)
+   Message: Element appears to be used for main content
+   Suggestion: Consider using <main> semantic element instead
+   Elements:
+     - <div id="accessibility-main-content" role="main" tabindex="-1">
+
+3. Rule: heading-hierarchy (1 instance)
+   Message: Heading hierarchy skipped: <h1> -> <h3>
+   Suggestion: Use <h2> instead of <h3>
+   Elements:
+     - Bundle & Save
+
+4. Rule: heading-hierarchy (1 instance)
+   Message: Heading hierarchy skipped: <h3> -> <h5>
+   Suggestion: Use <h4> instead of <h5>
+   Elements:
+     - Add a product below to bundle and save.
+										
+
+5. Rule: heading-hierarchy (1 instance)
+   Message: Heading hierarchy skipped: <h2> -> <h4>
+   Suggestion: Use <h3> instead of <h4>
+   Elements:
+     - Vehicle Insurance
+
+6. Rule: aria-actions (2 instances)
+   Message: Element uses ARIA button role instead of a semantic element
+   Suggestion: Consider using <button> semantic element instead
+   Elements:
+     - <a id="geolocation" class="zip-code-geo-icon geico-icon icon-geolocation" role="button" tabindex="0" aria-label="Geolocation">
+     - <a id="geolocation" class="zip-code-geo-icon geico-icon icon-geolocation" role="button" tabindex="0" aria-label="Geolocation">
+
+7. Rule: aria-actions (4 instances)
+   Message: Element uses ARIA link role instead of a semantic element
+   Suggestion: Consider using <a> semantic element instead
+   Elements:
+     - <div class="navigational-box" role="link" tabindex="0">
+     - <div class="navigational-box" role="link" tabindex="0">
+     - <div class="navigational-box" role="link" tabindex="0">
+     - <div class="navigational-box" role="link" tabindex="0">
+
+8. Rule: aria-expanded (3 instances)
+   Message: Element uses aria-expanded="false" for disclosure state
+   Suggestion: Consider using native <details> and <summary> elements for expandable content
+   Elements:
+     - <button class="gds-nav-item-button" aria-expanded="false">
+     - <button class="gds-nav-item-button" aria-expanded="false">
+     - <button class="gds-nav-item-button" aria-expanded="false">
+
+9. Rule: missing-role-action (58 instances)
+   Message: Focusable element does not have an action role
+   Suggestion: Use a native action element such as <button> or <a>, or add an appropriate action role
+   Elements:
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card" tabindex="0">
+     - <div class="card bundle-modal-trigger" tabindex="0">
+     - <div class="card extra modal-trigger" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <div id="auto" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="motorcycle" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="rv" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="boat" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="collector" class="card" tabindex="0">
+     - <div id="mexicoAuto" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="homeowners" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="renters" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="condo" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="mobilehome" class="card" tabindex="0">
+     - <div id="landlord" class="card" tabindex="0">
+     - <div id="flood" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="earthquake" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="business" class="card" tabindex="0">
+     - <div id="umbrella" class="card" tabindex="0">
+     - <div id="life" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="travel" class="card" tabindex="0">
+     - <div id="overseas" class="card" tabindex="0">
+     - <div id="idtheft" class="card" tabindex="0">
+     - <div id="pet" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="mobiledevice" class="card" tabindex="0">
+     - <div id="jewelry" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="event" class="card bundle-modal-trigger" tabindex="0">
+     - <div id="bicycle" class="card bundle-modal-trigger" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <section id="ssp" class="headline-zip" tabindex="0">
+     - <span tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+     - <span class="tab-filler" tabindex="0">
+
+Suggestions (2)
+────────────────────────────
+
+1. Rule: missing-key-landmark (1 instance)
+   Message: Page should have a header landmark
+   Suggestion: Add a <header> element
+   Elements:
+     - <body>
+
+2. Rule: missing-key-landmark (1 instance)
+   Message: Page should have a footer landmark
+   Suggestion: Add a <footer> element
+   Elements:
+     - <body>

@@ -1,45 +1,48 @@
 /**
- * Basic example demonstrating how to use Semantica11y
+ * Basic Playwright example demonstrating how to analyze rendered page HTML.
+ *
+ * Run with:
+ *   node examples/basic.js
  */
 
-import { Analyzer } from '../src/index.js';
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright';
+import { Analyzer, exportTextReport } from '../src/index.js';
 
-// Sample HTML with various accessibility issues
-const sampleHTML = `
-<div class="listing">  
-   <div class="imageContainer" tabindex="0">
-    <img alt="" class="stockImage" src={this.props.imageSrc}/>
-   </div>
-   <div class="details">
-   <span role="heading" aria-level="4">{this.props.pd}</span>
-      <section class="list" role="list">
-        <span class="dot"></span>
-        <div class="li" role="listitem">
-          {this.props.descOne} </div>
-        <span class="dot"></span>
-        <div class="li" role="listitem"> 
-          {this.props.descTwo}</div>
-        <span class="dot"></span>
-        <div class="li" role="listitem">
-          {this.props.descThree}</div>
-      </section>
-      <div role="button" tabindex="0" class="btn" 
-           onClick={this.addCart}></div>
-    </div>
-</div>
-`;
+const url = process.argv[2] || 'https://www.geico.com/';
+const reportPath = new URL('./semantica11y-report.txt', import.meta.url);
 
 async function runExample() {
-  console.log('🚀 Semantica11y Example Analysis\n');
+  console.log(`Semantica11y Playwright example\nAnalyzing: ${url}\n`);
 
-  const analyzer = new Analyzer();
+  const browser = await chromium.launch();
+  const page = await browser.newPage();
 
   try {
-    const results = await analyzer.analyzeHTML(sampleHTML, 'https://example.com');
+    await page.goto(url, { waitUntil: 'domcontentloaded' });
+
+    const html = await page.content();
+    const analyzer = new Analyzer();
+    const results = await analyzer.analyzeHTML(html, url);
+
     console.log(analyzer.formatResults(results));
-  } catch (error) {
-    console.error('Analysis failed:', error.message);
+
+    await exportTextReport(results, reportPath);
+    console.log(`Text report written to ${reportPath.pathname}`);
+
+    assert.equal(results.summary.errors, 0, 'Expected no Semantica11y errors');
+    assert.equal(results.summary.warnings, 0, 'Expected no Semantica11y warnings');
+  } finally {
+    await browser.close();
   }
 }
 
-runExample();
+runExample().catch((error) => {
+  console.error('Example failed:', error.message);
+
+  if (error.message.includes('Executable does not exist')) {
+    console.error('\nInstall the Playwright browser once with: npm exec playwright install chromium');
+  }
+
+  process.exitCode = 1;
+});
