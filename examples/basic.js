@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { Analyzer, exportTextReport } from '../src/index.js';
 
-const url = process.argv[2] || 'https://www.geico.com/';
+const url = process.argv[2] || 'https://www.fandango.com/';
 const reportPath = new URL('./semantica11y-report.txt', import.meta.url);
 
 async function runExample() {

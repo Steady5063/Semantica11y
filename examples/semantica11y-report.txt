@@ -1,213 +1,123 @@
 
 Semantica11y Analysis Report
-URL: https://www.geico.com/
-Time: 2026-06-09T13:48:35.980Z
+URL: https://www.fandango.com/
+Time: 2026-06-10T12:15:02.941Z
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total Findings: 121
-  Errors: 41
-  Warnings: 78
-  Suggestions: 2
+Total Findings: 76
+  Errors: 66
+  Warnings: 10
+  Suggestions: 0
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Findings By Category
 
-Errors (41)
+Errors (66)
 ────────────────────────────
 
-1. Rule: missing-form-labels (2 instances)
-   Message: Form input is not properly labeled
-   Suggestion: Add label: <label for="">Label text</label>
-   Elements:
-     - <input class="submitButton btn btn--primary btn--full-mobile">
-     - <input class="submitButton btn btn--primary btn--full-mobile">
-
-2. Rule: missing-form-labels (1 instance)
-   Message: Form input is not properly labeled
-   Suggestion: Add label: <label for="continueButton">Label text</label>
-   Elements:
-     - <input id="continueButton" class="btn btn--primary">
-
-3. Rule: native-label (38 instances)
+1. Rule: native-label (66 instances)
    Message: aria-label does not match native label text
    Suggestion: Update aria-label to match the visible label, or remove it and rely on native text
    Elements:
-     - <a class="btn btn--secondary" aria-label="Read More about Boat Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Life Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Umbrella Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Identity Protection Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Flood Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Travel Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Overseas Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Business Owners Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about General Liability Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Professional Liability Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Workers' Compensation">
-     - <a class="btn btn--secondary" aria-label="Read More about Medical Malpractice">
-     - <a class="btn btn--secondary" aria-label="Read More about Classic Auto Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Pet Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Jewelry Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Mexico Auto Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Earthquake Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Event Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Bicycle Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Boat Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Life Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Umbrella Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Identity Protection Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Flood Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Travel Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Overseas Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Business Owners Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about General Liability Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Professional Liability Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Workers' Compensation">
-     - <a class="btn btn--secondary" aria-label="Read More about Medical Malpractice">
-     - <a class="btn btn--secondary" aria-label="Read More about Classic Auto Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Pet Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Jewelry Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Mexico Auto Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Earthquake Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Event Insurance">
-     - <a class="btn btn--secondary" aria-label="Read More about Bicycle Insurance">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Disclosure Day (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="BTS WORLD TOUR 'ARIRANG' IN BUSAN: LIVE VIEWING (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Stop! That! Train! (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="The Furious (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Scary Movie (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Masters of the Universe (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Amazing Digital Circus: The Last Act (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Backrooms (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Obsession (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Star Wars: The Mandalorian and Grogu (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Breadwinner (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Michael (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Devil Wears Prada 2 (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Power Ballad (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Pressure (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="I Love Boosters (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Tuner (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Mortal Kombat II (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Passenger (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Sheep Detectives (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Shrek 25th Anniversary (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Super Mario Galaxy Movie (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Animal Farm (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Project Hail Mary (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="The Odyssey (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Hadestown: The Musical (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Supergirl (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Toy Story 5 (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Minions & Monsters (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Jackass: Best and Last (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="¡La Copa Mundial de la FIFA 2026™ por Telemundo!">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Minions & Monsters: Xfinity Early Access Screenings (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Supergirl: Fan First Screenings (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Young Washington (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Girls Like Girls (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="BLEACH: Thousand-Year Blood War - The Calamity (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Six: The Musical Live! (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Dune: Part Three (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Moana (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The End of Oak Street (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Death of Robin Hood (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Ice Cream Man (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Spider-Man: Brand New Day (2026)">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Michael">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Mortal Kombat II">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="White House Down">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="The Super Mario Galaxy Movie">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Project Hail Mary">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="The Ministry of Ungentlemanly Warfare">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" aria-label="Hokum">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="In the Grey">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Desert Warrior">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Super Mario Bros. Movie">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Lee Cronin's The Mummy">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Pacific Rim">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Is God Is">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Hoppers">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Over Your Dead Body">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="There's Something About Mary">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Fuze">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Normal">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Sully">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Housemaid">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="M3GAN">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Good Luck, Have Fun, Don't Die">
+     - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Day After Tomorrow">
 
-Warnings (78)
+Warnings (10)
 ────────────────────────────
 
-1. Rule: aria-landmarks (7 instances)
+1. Rule: aria-landmarks (5 instances)
    Message: Element appears to be used for a page section
    Suggestion: Consider using <section> semantic element instead
    Elements:
-     - <div id="external_disclaimer_manage_modal" class="external_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
-     - <div id="bundle_modal" class="modal" role="region">
-     - <div id="recall_modal" class="modal" role="region" aria-label="Retrieve saved quote dialog">
-     - <div id="catx_disclaimer_modal" class="catx_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
-     - <div id="external_disclaimer_quote_modal" class="external_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
-     - <div id="property_jewelry_modal" class="modal" role="region" aria-label="Jewelry insurance dialog">
-     - <div id="external_disclaimer_recall_modal" class="external_disclaimer modal" role="region" aria-label="Leaving geico.com dialog">
+     - <div id="splide01" class="js-fd-splide splide global-offer-banner__splide splide--loop splide--ltr splide--draggable is-active is-overflow is-initialized" role="region">
+     - <div id="splide02" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
+     - <div id="splide04" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
+     - <div id="splide05" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
+     - <div id="splide03" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
 
-2. Rule: aria-landmarks (1 instance)
-   Message: Element appears to be used for main content
-   Suggestion: Consider using <main> semantic element instead
-   Elements:
-     - <div id="accessibility-main-content" role="main" tabindex="-1">
-
-3. Rule: heading-hierarchy (1 instance)
-   Message: Heading hierarchy skipped: <h1> -> <h3>
-   Suggestion: Use <h2> instead of <h3>
-   Elements:
-     - Bundle & Save
-
-4. Rule: heading-hierarchy (1 instance)
-   Message: Heading hierarchy skipped: <h3> -> <h5>
-   Suggestion: Use <h4> instead of <h5>
-   Elements:
-     - Add a product below to bundle and save.
-										
-
-5. Rule: heading-hierarchy (1 instance)
-   Message: Heading hierarchy skipped: <h2> -> <h4>
-   Suggestion: Use <h3> instead of <h4>
-   Elements:
-     - Vehicle Insurance
-
-6. Rule: aria-actions (2 instances)
-   Message: Element uses ARIA button role instead of a semantic element
-   Suggestion: Consider using <button> semantic element instead
-   Elements:
-     - <a id="geolocation" class="zip-code-geo-icon geico-icon icon-geolocation" role="button" tabindex="0" aria-label="Geolocation">
-     - <a id="geolocation" class="zip-code-geo-icon geico-icon icon-geolocation" role="button" tabindex="0" aria-label="Geolocation">
-
-7. Rule: aria-actions (4 instances)
+2. Rule: aria-actions (1 instance)
    Message: Element uses ARIA link role instead of a semantic element
    Suggestion: Consider using <a> semantic element instead
    Elements:
-     - <div class="navigational-box" role="link" tabindex="0">
-     - <div class="navigational-box" role="link" tabindex="0">
-     - <div class="navigational-box" role="link" tabindex="0">
-     - <div class="navigational-box" role="link" tabindex="0">
+     - <span id="footer-feedback" class="footer-site-info__link dark__link__second" role="link">
 
-8. Rule: aria-expanded (3 instances)
-   Message: Element uses aria-expanded="false" for disclosure state
-   Suggestion: Consider using native <details> and <summary> elements for expandable content
+3. Rule: aria-actions (1 instance)
+   Message: Element uses ARIA button role instead of a semantic element
+   Suggestion: Consider using <button> semantic element instead
    Elements:
-     - <button class="gds-nav-item-button" aria-expanded="false">
-     - <button class="gds-nav-item-button" aria-expanded="false">
-     - <button class="gds-nav-item-button" aria-expanded="false">
+     - <div class="footer-site-info__advertising-btn" role="button">
 
-9. Rule: missing-role-action (58 instances)
-   Message: Focusable element does not have an action role
-   Suggestion: Use a native action element such as <button> or <a>, or add an appropriate action role
+4. Rule: native-label (3 instances)
+   Message: Unnecessary aria-label duplicates native label text
+   Suggestion: Remove the aria-label and use the native label text
    Elements:
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card" tabindex="0">
-     - <div class="card bundle-modal-trigger" tabindex="0">
-     - <div class="card extra modal-trigger" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <div id="auto" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="motorcycle" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="rv" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="boat" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="collector" class="card" tabindex="0">
-     - <div id="mexicoAuto" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="homeowners" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="renters" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="condo" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="mobilehome" class="card" tabindex="0">
-     - <div id="landlord" class="card" tabindex="0">
-     - <div id="flood" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="earthquake" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="business" class="card" tabindex="0">
-     - <div id="umbrella" class="card" tabindex="0">
-     - <div id="life" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="travel" class="card" tabindex="0">
-     - <div id="overseas" class="card" tabindex="0">
-     - <div id="idtheft" class="card" tabindex="0">
-     - <div id="pet" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="mobiledevice" class="card" tabindex="0">
-     - <div id="jewelry" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="event" class="card bundle-modal-trigger" tabindex="0">
-     - <div id="bicycle" class="card bundle-modal-trigger" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <section id="ssp" class="headline-zip" tabindex="0">
-     - <span tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
-     - <span class="tab-filler" tabindex="0">
+     - <a class="brand-bar__link" aria-label="Gift Cards">
+     - <a class="brand-bar__link" aria-label="Offers">
+     - <a class="brand-bar__link brand-bar__container" aria-label="FanClub">
 
-Suggestions (2)
+Suggestions (0)
 ────────────────────────────
-
-1. Rule: missing-key-landmark (1 instance)
-   Message: Page should have a header landmark
-   Suggestion: Add a <header> element
-   Elements:
-     - <body>
-
-2. Rule: missing-key-landmark (1 instance)
-   Message: Page should have a footer landmark
-   Suggestion: Add a <footer> element
-   Elements:
-     - <body>
+No suggestions found.

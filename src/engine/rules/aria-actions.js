@@ -98,7 +98,7 @@ export const ariaActionsRule = {
             : `Element uses ARIA ${role} role instead of a semantic element`,
           suggestion: hasMismatchedNativeRole
             ? `Remove role="${role}" or use ${semanticElement} if the element should behave as ${role}`
-            : `Consider using ${semanticElement} semantic element instead`,
+            : `Consider using ${semanticElement} element instead`,
           line: getLineNumber(element),
         });
       });
