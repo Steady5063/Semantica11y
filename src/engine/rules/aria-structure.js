@@ -26,7 +26,7 @@ export const ariaStructureRule = {
           rule: 'aria-structure',
           element: getElementSignature(element),
           message: `Element uses ARIA ${role} role instead of a semantic element`,
-          suggestion: `Consider using ${semanticElement} semantic element instead`,
+          suggestion: `Consider using ${semanticElement} element instead`,
           line: getLineNumber(element),
         });
       });

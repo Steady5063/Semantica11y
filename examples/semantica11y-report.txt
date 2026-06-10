@@ -1,20 +1,20 @@
 
 Semantica11y Analysis Report
 URL: https://www.fandango.com/
-Time: 2026-06-10T12:15:02.941Z
+Time: 2026-06-10T12:25:12.951Z
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Total Findings: 76
-  Errors: 66
-  Warnings: 10
+Total Findings: 88
+  Errors: 68
+  Warnings: 20
   Suggestions: 0
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Findings By Category
 
-Errors (66)
+Errors (68)
 ────────────────────────────
 
-1. Rule: native-label (66 instances)
+1. Rule: native-label (68 instances)
    Message: aria-label does not match native label text
    Suggestion: Update aria-label to match the visible label, or remove it and rely on native text
    Elements:
@@ -84,33 +84,75 @@ Errors (66)
      - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="M3GAN">
      - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="Good Luck, Have Fun, Don't Die">
      - <a class="js-fd-carousel-focus-elem fd-carousel__link" tabindex="-1" aria-label="The Day After Tomorrow">
+     - <button class="ot-link-btn back-btn-handler" aria-label="Back">
+     - <button id="filter-btn-handler" aria-label="Filter">
 
-Warnings (10)
+Warnings (20)
 ────────────────────────────
 
-1. Rule: aria-landmarks (5 instances)
+1. Rule: aria-landmarks (7 instances)
    Message: Element appears to be used for a page section
    Suggestion: Consider using <section> semantic element instead
    Elements:
-     - <div id="splide01" class="js-fd-splide splide global-offer-banner__splide splide--loop splide--ltr splide--draggable is-active is-overflow is-initialized" role="region">
+     - <div id="splide01" class="js-fd-splide splide global-offer-banner__splide is-overflow is-initialized splide--loop splide--ltr splide--draggable is-active" role="region">
      - <div id="splide02" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
      - <div id="splide04" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
      - <div id="splide05" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
      - <div id="splide03" class="splide js-fd-splide splide--slide splide--ltr splide--draggable is-active is-initialized" role="region">
+     - <div id="onetrust-banner-sdk" class="otFlat bottom ot-wo-title vertical-align-content" role="region" tabindex="0" aria-label="Cookie banner">
+     - <div id="onetrust-pc-sdk" class="otPcCenter ot-hide ot-fade-in" role="region" aria-label="Preference center">
 
 2. Rule: aria-actions (1 instance)
    Message: Element uses ARIA link role instead of a semantic element
-   Suggestion: Consider using <a> semantic element instead
+   Suggestion: Consider using <a> element instead
    Elements:
      - <span id="footer-feedback" class="footer-site-info__link dark__link__second" role="link">
 
 3. Rule: aria-actions (1 instance)
    Message: Element uses ARIA button role instead of a semantic element
-   Suggestion: Consider using <button> semantic element instead
+   Suggestion: Consider using <button> element instead
    Elements:
      - <div class="footer-site-info__advertising-btn" role="button">
 
-4. Rule: native-label (3 instances)
+4. Rule: aria-expanded (2 instances)
+   Message: Element uses aria-expanded="false" for disclosure state
+   Suggestion: Consider using native <details> and <summary> elements for expandable content
+   Elements:
+     - <button aria-expanded="false">
+     - <button aria-expanded="false">
+
+5. Rule: aria-modal (1 instance)
+   Message: Element uses ARIA dialog role instead of a native dialog element
+   Suggestion: Consider using the native <dialog> element for modal dialogs
+   Elements:
+     - <div role="dialog" aria-label="Privacy">
+
+6. Rule: aria-modal (1 instance)
+   Message: Element uses aria-modal for modal dialog behavior
+   Suggestion: Consider using the native <dialog> element for modal dialogs
+   Elements:
+     - <div role="dialog" aria-label="Notice of Right to Opt-Out of Sale/Sharing and Targeted Advertising " aria-modal="true">
+
+7. Rule: aria-structure (1 instance)
+   Message: Element uses ARIA list role instead of a semantic element
+   Suggestion: Consider using <ul> or <ol> semantic element instead
+   Elements:
+     - <div class="ot-fltr-opts" role="list">
+
+8. Rule: aria-structure (1 instance)
+   Message: Element uses ARIA listitem role instead of a semantic element
+   Suggestion: Consider using <li> semantic element instead
+   Elements:
+     - <div class="ot-fltr-opt" role="listitem">
+
+9. Rule: missing-role-action (2 instances)
+   Message: Focusable element does not have an action role
+   Suggestion: Use a native action element such as <button> or <a>, or add an appropriate action role
+   Elements:
+     - <iframe id="google_ads_iframe_/5727661/fandango.dart/homepage_6" tabindex="0" aria-label="Advertisement">
+     - <div id="onetrust-banner-sdk" class="otFlat bottom ot-wo-title vertical-align-content" role="region" tabindex="0" aria-label="Cookie banner">
+
+10. Rule: native-label (3 instances)
    Message: Unnecessary aria-label duplicates native label text
    Suggestion: Remove the aria-label and use the native label text
    Elements:
