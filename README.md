@@ -2,26 +2,11 @@
 
 # Semantica11y
 
-A JavaScript analysis engine for checking webpages (HTML) for ARIA compliance and non-semantic HTML elements with intelligent suggestions for semantic improvements.
+A JavaScript analysis engine for checking webpages (HTML) for non-semantic HTML elements with ARIA using intelligent suggestions for semantic improvements. 
 
 ## 🎯 Purpose
 
-Semantica11y helps developers and accessibility professionals:
-- Identify non-semantic HTML elements that should use semantic alternatives
-- Detect missing ARIA labels and accessibility attributes
-- Validate heading hierarchy and semantic structure
-- Get actionable suggestions for improving web accessibility (a11y)
-- Ensure compliance with WCAG and modern web standards
-
-## ✨ Features
-
-- **Semantic Analysis**: Detects divs/spans used for structural layout
-- **ARIA Validation**: Checks for missing labels and ARIA attributes
-- **Heading Hierarchy**: Validates proper heading structure
-- **Form Accessibility**: Ensures inputs are properly labeled
-- **Landmark Detection**: Verifies presence of main content landmarks
-- **Extensible Rules Engine**: Add custom rules for your specific needs
-- **Detailed Reporting**: Comprehensive analysis with severity levels and suggestions
+Using semantic and native HTML elements is the foundation to building an accessible webpage. Semantica11y is here to help ensure that when you build your web applications, it is build semantically first, for better accessibility and long term code sustainability!
 
 ## 📦 Installation
 
@@ -68,41 +53,6 @@ const results = await analyzer.analyzeHTML(htmlString, 'https://example.com');
 console.log(analyzer.formatResults(results));
 ```
 
-### Analyze from File
-
-```javascript
-const results = await analyzer.analyzeFile('./index.html');
-```
-
-### Access Raw Results
-
-```javascript
-const results = await analyzer.analyzeHTML(html);
-console.log(results);
-/*
-{
-  url: 'https://example.com',
-  timestamp: '2024-01-15T10:30:00Z',
-  summary: {
-    total: 5,
-    errors: 2,
-    warnings: 2,
-    suggestions: 1
-  },
-  issues: [
-    {
-      severity: 'warning',
-      rule: 'aria-landmarks',
-      element: '<div role="navigation">',
-      message: 'Element appears to be used for navigation',
-      suggestion: 'Consider using <nav> semantic element instead'
-    },
-    // ... more issues
-  ]
-}
-*/
-```
-
 ### Reports
 
 ```javascript
@@ -137,60 +87,9 @@ const analyzer = new Analyzer({ rules: customRules });
 
 ## 📋 Default Rules
 
-### 1. **aria-landmarks**
-Detects elements using ARIA landmark roles that should use semantic elements.
-- Severity: Warning
-- Suggestion: Use `<header>`, `<footer>`, `<nav>`, `<main>`, `<aside>`, `<article>`, `<section>`
+Semantica11y ships with 11 default rules that check semantic HTML, ARIA usage, headings, landmarks, forms, images, disclosure controls, modal dialogs, and native label conflicts.
 
-### 2. **missing-form-labels**
-Detects form inputs without proper labels.
-- Severity: Error
-- Suggestion: Associate labels with controls using `for`, a wrapping `<label>`, or ARIA
-
-### 3. **heading-hierarchy**
-Validates heading structure (H1 → H2 → H3, etc.) and checks that the page has an H1.
-- Severity: Warning
-- Suggestion: Fix skipped heading levels and add one `<h1>` for the main page topic
-
-### 4. **aria-actions**
-Detects elements using ARIA action roles that should use semantic elements, including mismatched ARIA roles on native action elements.
-- Severity: Warning
-- Suggestion: Use semantic controls such as `<button>`, `<input type="checkbox">`, `<a>`, `<input>`, or `<textarea>`
-
-### 5. **aria-expanded**
-Detects elements using `aria-expanded="true"` or `aria-expanded="false"` for disclosure state.
-- Severity: Warning
-- Suggestion: Use native `<details>` and `<summary>` elements for expandable content
-
-### 6. **aria-modal**
-Detects elements using `aria-modal`, elements using `role="dialog"`, and `<dialog>` elements with `tabindex`.
-- Severity: Warning for `aria-modal` or `role="dialog"`, Error for `tabindex` on `<dialog>`
-- Suggestion: Use native `<dialog>` for modal dialogs and remove `tabindex` from `<dialog>`
-
-### 7. **missing-key-landmark**
-Checks for header, main, footer, and page heading structure, whether built with semantic elements or ARIA roles.
-- Severity: Suggestion
-- Suggestion: Add missing structure such as `<header>`, `<main>`, `<footer>`, a heading, or matching ARIA roles
-
-### 8. **aria-structure**
-Detects elements using ARIA structure roles that should use semantic elements.
-- Severity: Warning
-- Suggestion: Use semantic structure such as `<article>`, `<blockquote>`, `<caption>`, `<td>`, `<code>`, `<th scope="col">`, `<dfn>`, `<del>`, `<em>`, `<figure>`, `<h1>` through `<h6>`, `<ul>`, `<ol>`, `<li>`, `<table>`, `<p>`, `<tr>`, `<thead>`, `<tbody>`, `<tfoot>`, `<th scope="row">`, `<hr>`, `<strong>`, `<sub>`, `<sup>`, `<dt>`, or `<time>`
-
-### 9. **missing-role-action**
-Detects non-semantic action elements with `tabindex="0"` or click handlers that do not have an action role.
-- Severity: Warning
-- Suggestion: Use native controls such as `<button>` or `<a>`, or add an appropriate action role
-
-### 10. **native-label**
-Detects native action elements with `aria-label` values that duplicate or completely differ from native label text.
-- Severity: Warning for duplicate labels, Error for unrelated labels
-- Suggestion: Remove unnecessary `aria-label` values or make sure they include the visible/native label text. Helper text such as "opens in a new window" or "opens in new window" is allowed.
-
-### 11. **image-alt**
-Detects images missing `alt` attributes and images where `aria-label` conflicts with or replaces `alt`.
-- Severity: Error for missing `alt`, Warning for `aria-label` with no `alt`, `aria-label` with `alt=""`, or `aria-label` overriding `alt` text
-- Suggestion: Put image alternative text in `alt`, use `alt=""` only for decorative images, and avoid `aria-label` on images
+For the full rule-by-rule reference, see [src/engine/rules/README.md](./src/engine/rules/README.md).
 
 ## 🧪 Testing
 
