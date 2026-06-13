@@ -1,6 +1,6 @@
 {
   "name": "semantica11y",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A JavaScript engine to check webpages for ARIA and non-semantic HTML elements with suggestions for improvements",
   "type": "module",
   "main": "./src/index.js",
