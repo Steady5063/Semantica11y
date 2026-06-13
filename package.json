@@ -37,7 +37,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "jsdom": "^24.0.0"
+    "jsdom": "^24.0.0",
+    "semantica11y": "^1.0.0"
   },
   "devDependencies": {
     "playwright": "^1.60.0"

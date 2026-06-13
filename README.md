@@ -1,4 +1,4 @@
-<img src="./Semantically-logo.png" alt="Semantica11y logo" width="500" height="350">
+<img src="Semantically-logo.png" alt="Semantica11y logo" width="500" height="350">
 
 # Semantica11y
 
@@ -89,7 +89,7 @@ const analyzer = new Analyzer({ rules: customRules });
 
 Semantica11y ships with 11 default rules that check semantic HTML, ARIA usage, headings, landmarks, forms, images, disclosure controls, modal dialogs, and native label conflicts.
 
-For the full rule-by-rule reference, see [src/engine/rules/README.md](./src/engine/rules/README.md).
+For the full rule-by-rule reference, see [src/engine/rules/README.md](src/engine/rules/README.md).
 
 ## 🧪 Testing
 
