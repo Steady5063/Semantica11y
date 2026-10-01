@@ -346,7 +346,7 @@ test('Analyzer - Detect ARIA action role overrides on native elements', async ()
 });
 
 test('Analyzer - Detect aria-expanded disclosure controls', async () => {
-  const analyzer = new Analyzer();
+  const analyzer = new Analyzer({ experimental: true });
   const html = `
     <html>
       <body>

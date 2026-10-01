@@ -35,7 +35,7 @@ function createIssue(element, message) {
     rule: 'missing-role-action',
     element: getElementSignature(element),
     message,
-    suggestion: 'Use a native action element such as <button> or <a>, or add an appropriate action role',
+    suggestion: 'Use a native action element such as <button> or <a>',
     line: getLineNumber(element),
   };
 }

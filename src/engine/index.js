@@ -3,13 +3,16 @@
  */
 
 import { DEFAULT_RULES } from './definitions.js';
+import { resolveConfig } from '../config.js';
 
 export class RuleEngine {
   /**
    * Creates a new RuleEngine instance
-   * @param {Array} customRules - Optional custom rules to extend/override defaults
+   * @param {Array} customRules - Optional custom rules to append to defaults
+   * @param {Object} options - Shared configuration overrides
    */
-  constructor(customRules = []) {
+  constructor(customRules = [], options = {}) {
+    this.options = resolveConfig(options);
     this.rules = [...DEFAULT_RULES, ...customRules];
   }
 
@@ -27,8 +30,7 @@ export class RuleEngine {
    * @param {Object} results - Results object to populate
    */
   async analyze(document, results) {
-    for (const rule of this.rules) {
-      if (!rule.enabled) continue;
+    for (const rule of this.getActiveRules()) {
 
       try {
         const issues = rule.check(document);
@@ -49,6 +51,8 @@ export class RuleEngine {
    */
   addIssuesToResults(results, issues) {
     issues.forEach((issue) => {
+      if (!this.options.severities.includes(issue.severity)) return;
+      if (!this.options.includeWarnings && issue.severity === 'warning') return;
       results.issues.push(issue);
 
       // Update summary counts
@@ -67,7 +71,11 @@ export class RuleEngine {
    * @returns {Array} Active rules
    */
   getActiveRules() {
-    return this.rules.filter((r) => r.enabled);
+    return this.rules.filter((rule) =>
+      rule.enabled &&
+      (!rule.experimental || this.options.experimental) &&
+      (this.options.enabledRules === null || this.options.enabledRules.includes(rule.id))
+    );
   }
 
   /**

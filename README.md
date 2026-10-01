@@ -53,6 +53,51 @@ const results = await analyzer.analyzeHTML(htmlString, 'https://example.com');
 console.log(analyzer.formatResults(results));
 ```
 
+### Configuration (1.1.1)
+
+Configure shared defaults once before creating analyzers:
+
+```javascript
+import { Analyzer, configure, resetConfig } from 'semantica11y';
+
+configure({
+  severities: ['error'], // Report errors only
+  enabledRules: ['image-alt', 'missing-form-labels'],
+  experimental: false,
+});
+
+const analyzer = new Analyzer();
+const results = await analyzer.analyzeHTML(htmlString);
+
+// Instance options override shared defaults.
+const disclosures = new Analyzer({
+  enabledRules: ['aria-expanded'],
+  severities: ['warning'],
+  experimental: true,
+});
+
+resetConfig(); // Restore defaults for future instances
+```
+
+| Option | Default | Behavior |
+| --- | --- | --- |
+| `severities` | `['error', 'warning', 'suggestion']` | Include only these finding severities; `[]` returns no findings. |
+| `enabledRules` | `null` | Run all eligible rules, or only the listed rule IDs; `[]` runs none. |
+| `experimental` | `false` | Opt into experimental rules, currently `aria-expanded`. |
+| `includeWarnings` | `true` | Set to `false` to exclude warnings while retaining selected errors and suggestions. |
+
+Rule selection controls which checks execute. Severity filtering applies to the
+findings because a single rule can produce multiple severities. Summary counts
+and reports reflect the filtered findings. Experimental rules require
+`experimental: true` even when listed in `enabledRules`; rules with
+`enabled: false` remain disabled. Unknown rule IDs match no rules.
+
+Shared settings are copied when an instance is created; later configuration
+changes do not affect existing instances. Custom rules continue to be appended
+using `rules` and follow the same filters; mark a custom rule with
+`experimental: true` to require opt-in. Direct engine users can pass options as
+`new RuleEngine(customRules, options)`; engines also inherit shared defaults.
+
 ### Reports
 
 ```javascript
@@ -87,7 +132,7 @@ const analyzer = new Analyzer({ rules: customRules });
 
 ## 📋 Default Rules
 
-Semantica11y ships with 11 default rules that check semantic HTML, ARIA usage, headings, landmarks, forms, images, disclosure controls, modal dialogs, and native label conflicts.
+Semantica11y ships with 11 built-in rules (10 enabled by default and one experimental rule) that check semantic HTML, ARIA usage, headings, landmarks, forms, images, disclosure controls, modal dialogs, and native label conflicts.
 
 For the full rule-by-rule reference, see [src/engine/rules/README.md](https://github.com/Steady5063/Semantica11y/tree/main/src/engine/rules).
 

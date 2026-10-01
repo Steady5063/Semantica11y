@@ -10,15 +10,15 @@ export class Analyzer {
   /**
    * Creates a new Analyzer instance
    * @param {Object} options - Configuration options
-   * @param {Array} options.rules - Custom rules to apply (uses defaults if not provided)
+   * @param {Array} options.rules - Custom rules to append to defaults
+   * @param {string[]} options.severities - Issue severities to include
+   * @param {string[]|null} options.enabledRules - Rule IDs to run (null runs all eligible rules)
+   * @param {boolean} options.experimental - Enable experimental rules (default: false)
    * @param {boolean} options.includeWarnings - Include warning-level issues (default: true)
    */
   constructor(options = {}) {
-    this.options = {
-      includeWarnings: true,
-      ...options,
-    };
-    this.ruleEngine = new RuleEngine(options.rules);
+    this.ruleEngine = new RuleEngine(options.rules, options);
+    this.options = this.ruleEngine.options;
     this.results = null;
   }
 
