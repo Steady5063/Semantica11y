@@ -84,6 +84,8 @@ Exports: `ariaExpandedRule`
 Rule id: `aria-expanded`
 Severity: `warning`
 
+Experimental: disabled by default. Enable with `experimental: true`.
+
 Checks elements with `aria-expanded="true"` or `aria-expanded="false"`.
 
 Individual checks:
@@ -180,13 +182,19 @@ Checks `img` elements for `alt` usage and conflicting ARIA labels.
 
 Individual checks:
 - Missing `alt`: reports an `error` when an image has no `alt` attribute.
+- `aria-hidden="true"` or `role="presentation"` without `alt=""`: reports a
+  `warning` recommending native decorative markup. Missing `alt` still reports
+  an `error`; these attributes do not exempt an image from this semantic check.
+  With meaningful alt text, review whether the image is decorative or informative.
+  Using both attributes produces one combined warning.
 - `aria-label` without `alt`: reports a `warning`.
 - `aria-label` with `alt=""`: reports a `warning`.
 - `aria-label` overriding `alt`: reports a `warning` when normalized
   `aria-label` text differs from normalized `alt` text.
 
-Passes when an image has `alt` and no conflicting `aria-label`, or when
-`aria-label` exactly matches the `alt` text.
+The new decorative-image checks pass with `alt=""` (including bare `alt`).
+Existing `aria-label` conflict checks still apply. Otherwise, images pass with
+`alt` and no conflicting `aria-label`, or matching normalized label text.
 
 ## `native-label.js`
 

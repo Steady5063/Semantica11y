@@ -12,3 +12,5 @@ export {
   formatConsoleReport,
   printConsoleReport,
 } from './engine/reporter/index.js';
+
+export { configure, resetConfig } from './config.js';

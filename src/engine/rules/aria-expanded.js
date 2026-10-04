@@ -6,6 +6,7 @@ export const ariaExpandedRule = {
   id: 'aria-expanded',
   name: 'ARIA expanded disclosure',
   enabled: true,
+  experimental: true,
   description: 'Detects aria-expanded usage that could use native disclosure elements',
   check(document) {
     const issues = [];

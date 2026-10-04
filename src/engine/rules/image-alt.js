@@ -32,6 +32,24 @@ export const imageAltRule = {
         });
       }
 
+      const decorativeAttributes = [];
+      if (image.getAttribute('aria-hidden')?.trim().toLowerCase() === 'true') {
+        decorativeAttributes.push('aria-hidden="true"');
+      }
+      if (image.getAttribute('role')?.trim().toLowerCase() === 'presentation') {
+        decorativeAttributes.push('role="presentation"');
+      }
+      if (decorativeAttributes.length && (!hasAltAttribute || altText !== '')) {
+        issues.push({
+          severity: 'warning',
+          rule: 'image-alt',
+          element: getElementSignature(image),
+          message: `Image uses ${decorativeAttributes.join(' and ')} without alt=""`,
+          suggestion: 'Use alt="" for decorative images. If the image conveys information, keep meaningful alt text and remove the attributes that hide its semantics',
+          line: getLineNumber(image),
+        });
+      }
+
       if (!hasAriaLabel) {
         return;
       }
